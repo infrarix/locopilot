@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-The latest minor of the `quickslug` npm package is supported with security fixes. Older minors receive fixes for **critical** issues only.
+The latest minor of the `@infrarix/quickslug` npm package is supported with security fixes. Older minors receive fixes for **critical** issues only.
 
 | Version | Supported |
 | ------- | --------- |

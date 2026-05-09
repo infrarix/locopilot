@@ -57,7 +57,7 @@ Powered by **QuickSlug Cloud**:
 
 ```bash
 # 1. Install CLI
-npm install -g quickslug
+npm install -g @infrarix/quickslug
 
 # 2. Initialize (auto-installs Ollama if missing)
 quickslug init

@@ -7,7 +7,7 @@ const STEPS = [
     n: '01',
     title: 'Install & init',
     desc: 'Install the CLI and run quickslug init. It detects your Ollama setup, initialises a local SQLite database, and writes a default .env.',
-    code: `$ npm install -g quickslug
+    code: `$ npm install -g @infrarix/quickslug
 $ quickslug init
 
 🐌 QuickSlug Doctor

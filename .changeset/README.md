@@ -9,7 +9,7 @@ We have a quick list of common questions to get you started engaging with this p
 
 ## How QuickSlug uses changesets
 
-This repo publishes a single npm package: **`quickslug`**.
+This repo publishes a single npm package: **`@infrarix/quickslug`**.
 
 Most of the time you don't need to write a changeset by hand — the
 `changeset:autogenerate` script reads the most recent commit message and emits

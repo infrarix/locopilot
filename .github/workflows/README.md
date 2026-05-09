@@ -1,6 +1,6 @@
 # GitHub Actions Workflows
 
-CI/CD for the **`quickslug`** npm package and its Docusaurus docs site.
+CI/CD for the **`@infrarix/quickslug`** npm package and its Docusaurus docs site.
 
 This directory is designed for `quickslug-public-cli/` to live as its own standalone repository. All workflow paths assume `quickslug-public-cli/` is the repo root (so `package.json`, `.changeset/`, `.husky/`, etc. all sit at the same level as `.github/`).
 
@@ -33,7 +33,7 @@ Builds the Docusaurus site at `docs/` and deploys to GitHub Pages with the offic
 | Secret      | Used by       | Purpose                                                                                     |
 | ----------- | ------------- | ------------------------------------------------------------------------------------------- |
 | `GH_PAT`    | `release.yml` | Lets `changesets/action` create release PRs (the default `GITHUB_TOKEN` cannot create PRs). |
-| `NPM_TOKEN` | `release.yml` | npm publish token (Automation type, must have publish rights on the `quickslug` package).   |
+| `NPM_TOKEN` | `release.yml` | npm publish token (Automation type, must have publish rights on the `@infrarix/quickslug` package — the token must be scoped to the `infrarix` org). |
 
 ### Creating `GH_PAT`
 
@@ -95,6 +95,6 @@ The CI jobs are unaffected — they check out `quickslug-public-cli/` (or this d
 
 **`GitHub Actions is not permitted to create or approve pull requests`** — `GH_PAT` missing or lacks `repo` + `workflow` scopes.
 
-**npm publish fails with 401/403** — `NPM_TOKEN` missing, expired, or scoped to the wrong package; the token must have publish rights on `quickslug`.
+**npm publish fails with 401/403** — `NPM_TOKEN` missing, expired, or scoped to the wrong package; the token must have publish rights on `@infrarix/quickslug`. For first-time publishes of a scoped package, also confirm `publishConfig.access: "public"` is set in `package.json` (it is) — otherwise npm rejects the publish as an attempted private package.
 
 **Docs deploy fails with `404` on GitHub Pages** — Repo → Settings → Pages → Source must be `GitHub Actions` (not "Deploy from a branch").

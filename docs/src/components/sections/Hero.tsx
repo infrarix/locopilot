@@ -8,7 +8,7 @@ import ParticleField from '../marketing/ParticleField';
 import FadeIn from '../ui/FadeIn';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 
-const INSTALL_CMD = 'npm install -g quickslug && quickslug init';
+const INSTALL_CMD = 'npm install -g @infrarix/quickslug && quickslug init';
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
