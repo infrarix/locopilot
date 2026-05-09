@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports: ['${API_PORT:-8080}:8080']
+    env_file: ../.env
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    volumes:
+      - quickslug_data:/root/.quickslug
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:8080/v1/quickslug/health']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports: ['127.0.0.1:11434:11434']
+    volumes: [ollama_models:/root/.ollama]
+    healthcheck:
+      test: ['CMD', 'ollama', 'list']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  quickslug_data:
+  ollama_models:

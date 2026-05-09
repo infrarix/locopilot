@@ -1,0 +1,58 @@
+---
+sidebar_position: 6
+title: quickslug logs
+description: Stream live logs for a running training job over Server-Sent Events.
+---
+
+# `quickslug logs`
+
+> Stream logs for a training job.
+
+Source: [`src/cli/commands/logs.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/logs.ts)
+
+## Synopsis
+
+```bash
+quickslug logs --job <id>
+```
+
+| Flag | Required | Description |
+|---|---|---|
+| `--job <id>` | ✅ | The job ID returned by `quickslug train` |
+
+The command opens an SSE stream against `/v1/quickslug/training/jobs/<id>/logs` (or the equivalent cloud endpoint when a Pro token is present) and writes each `data:` frame to stdout.
+
+## Reattaching
+
+`quickslug train` already opens a log stream automatically. Use `quickslug logs` when:
+
+- The terminal that started the job was closed
+- You want to monitor a job from a second machine
+- The training stream errored (network blip) and you want to reattach
+
+## Output
+
+```text
+  Streaming logs for job job_7f3a2b...
+
+[unsloth] Step 100/300 — loss: 0.98
+[unsloth] Step 150/300 — loss: 0.83
+[unsloth] Step 200/300 — loss: 0.71
+data: [DONE]
+
+  Stream ended.
+```
+
+`data: [DONE]` is the SSE sentinel that marks end-of-stream — the underlying job may still be writing checkpoints to disk for a few seconds afterwards.
+
+## Errors
+
+| Error | Cause |
+|---|---|
+| `Could not connect to API: …` | The local API isn't running |
+| `API error 404` | Bad job ID — check it with `quickslug train` |
+| `Stream ended: …` | Network interruption — re-run `quickslug logs --job …` |
+
+## Authorization
+
+If `~/.quickslug/config.json` contains a Pro token it's sent as `Authorization: Bearer …`. Without one, the request is anonymous (Free tier).

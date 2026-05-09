@@ -1,0 +1,31 @@
+# Generated artifacts
+node_modules
+dist
+build
+coverage
+.turbo
+.docusaurus
+.next
+
+# Lockfiles
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Don't reformat changeset entries — they have a strict YAML+MD shape
+.changeset/*.md
+
+# Docs site has its own node_modules / build under docs/
+docs/build
+docs/.docusaurus
+docs/node_modules
+
+# Python runners (have their own formatter)
+src/training/adapters/*.py
+
+# Env / secret files
+.env
+.env.*
+
+# CHANGELOG is rewritten by changesets, don't reformat
+CHANGELOG.md

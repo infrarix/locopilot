@@ -1,0 +1,139 @@
+# ───────────────────────────────────────────────────────────
+# Dependencies
+# ───────────────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# ───────────────────────────────────────────────────────────
+# Build output
+# ───────────────────────────────────────────────────────────
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# ───────────────────────────────────────────────────────────
+# Logs / runtime
+# ───────────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+.eslintcache
+.cache/
+.parcel-cache/
+
+# ───────────────────────────────────────────────────────────
+# Environment / secrets
+# Never commit local env files or QuickSlug auth state.
+# ───────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+.envrc
+
+# Local QuickSlug state copied into the repo for testing.
+# Real state lives in ~/.quickslug/, but be defensive.
+.quickslug/
+quickslug-config.json
+*.qs_token
+
+# ───────────────────────────────────────────────────────────
+# Local databases
+# Free tier writes to ~/.quickslug/db.sqlite; guard against
+# stray copies inside the repo.
+# ───────────────────────────────────────────────────────────
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.db
+
+# ───────────────────────────────────────────────────────────
+# Training / model artifacts
+# These can be huge — never accidentally commit them.
+# ───────────────────────────────────────────────────────────
+checkpoints/
+runs/
+outputs/
+training-output/
+adapters/
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+
+# Datasets staged locally for training jobs
+datasets/
+*.jsonl
+
+# ───────────────────────────────────────────────────────────
+# Python (runners under src/training/adapters/)
+# ───────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.python-version
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# ───────────────────────────────────────────────────────────
+# Test / coverage
+# ───────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+*.lcov
+
+# ───────────────────────────────────────────────────────────
+# Editor / IDE
+# ───────────────────────────────────────────────────────────
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# ───────────────────────────────────────────────────────────
+# OS
+# ───────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ───────────────────────────────────────────────────────────
+# Docker / infra
+# ───────────────────────────────────────────────────────────
+.dockerignore.local
+docker-compose.override.yml
+
+# ───────────────────────────────────────────────────────────
+# Local scratch / experiments
+# `scratch/` is for throwaway local code; keep it out of git.
+# ───────────────────────────────────────────────────────────
+scratch/
+tmp/
+.tmp/
+
+# Pending changeset markdown files ARE committed — Changesets
+# consumes them at release time — so nothing to ignore here.

@@ -1,0 +1,107 @@
+---
+sidebar_position: 1
+title: Installation
+description: Install the QuickSlug CLI from npm and let it set up Ollama, Python, SQLite, and a default config.
+---
+
+# Installation
+
+QuickSlug ships as a single npm package called **`quickslug`**. Installing it globally puts the `quickslug` binary on your `$PATH`.
+
+## Requirements
+
+| Requirement | Why | Auto-installed? |
+|---|---|---|
+| **Node.js 20+** | Runs the CLI and the local Fastify API | ❌ install yourself |
+| **Ollama** | Runs models on your hardware | ✅ `quickslug init` will install it |
+| **Python 3.9+** | Required by the training adapters (Unsloth / Axolotl / MLX) | ❌ install yourself |
+| **SQLite** | Local-tier persistence (inference logs, training jobs) | ✅ ships with `sqlite3` npm package |
+
+:::tip Apple Silicon
+On macOS arm64 the training adapter automatically becomes [MLX](../training/adapters#mlx-apple-silicon). Install the Python runtime once with `pip3 install mlx-lm`.
+:::
+
+## Install the CLI
+
+```bash
+npm install -g quickslug
+```
+
+Verify it landed:
+
+```bash
+quickslug --version
+# 1.0.0
+```
+
+## Initialise your machine
+
+```bash
+quickslug init
+```
+
+`quickslug init` runs four checks (the source is in [`src/cli/commands/init.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/init.ts)):
+
+1. **Ollama** — checks if the binary is on `PATH`. If not, it auto-installs:
+    - macOS → `brew install --cask ollama`
+    - Linux → `curl -fsSL https://ollama.com/install.sh | sh`
+    - Windows → `winget install -e --id Ollama.Ollama`
+2. **Python 3** — verifies `python3` is reachable. Prints install instructions if missing.
+3. **SQLite** — creates `~/.quickslug/db.sqlite` and the `inference_logs` + `training_jobs` tables.
+4. **Config** — writes a default `~/.quickslug/.env` with sensible defaults.
+
+A successful run looks like this:
+
+```text
+🐌 QuickSlug Setup
+
+  [1/4] Checking Ollama...
+  ✔ Ollama installed (ollama version is 0.5.4)
+  ✔ Ollama service running
+
+  [2/4] Checking Python 3 (required for training adapters)...
+  ✔ Python 3.12.1 (python3)
+
+  [3/4] Initializing local database...
+  ✔ SQLite ready at ~/.quickslug/db.sqlite
+
+  [4/4] Writing default config...
+  ✔ Config written to ~/.quickslug/.env
+
+  Setup complete!
+```
+
+## Pull your first model
+
+```bash
+quickslug models pull llama3:8b
+```
+
+This is a thin wrapper around `ollama pull`. See [`quickslug models`](../cli/models).
+
+## Start the API server
+
+```bash
+quickslug start
+```
+
+Listens on `http://localhost:8080`. Hit `/v1/quickslug/health` for a heartbeat.
+
+## Verify everything
+
+```bash
+quickslug doctor
+```
+
+Runs every pre-flight check end-to-end. See [`quickslug doctor`](../cli/doctor) for the full list.
+
+## Where things live
+
+```text
+~/.quickslug/
+├── db.sqlite        # local inference + training history
+├── .env             # OLLAMA_HOST, API_PORT, SQLITE_PATH, …
+└── config.json      # Pro-tier token (created by `quickslug login`)
+```
+
+The CLI never reads `DATABASE_URL` or `REDIS_URL` — those live exclusively on the cloud control plane. Your machine stays fully self-contained.

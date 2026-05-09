@@ -1,0 +1,94 @@
+---
+sidebar_position: 3
+title: GET /v1/quickslug/health
+description: Heartbeat endpoint — probes Ollama, SQLite, and (Pro) cloud reachability.
+---
+
+# `GET /v1/quickslug/health`
+
+Heartbeat endpoint for liveness and readiness probes.
+
+Source: [`src/api/routes/health.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/routes/health.ts)
+
+## Endpoint
+
+```
+GET http://localhost:8080/v1/quickslug/health
+```
+
+Public — listed in `PUBLIC_ROUTES`, no `Authorization` header required.
+
+## Probes
+
+The handler runs every probe in parallel via `Promise.allSettled`:
+
+| Probe | What it does |
+|---|---|
+| `ollama` | `GET <OLLAMA_HOST>/` (default `http://localhost:11434`) with a 5 s timeout |
+| `sqlite` | `query('SELECT 1')` against `~/.quickslug/db.sqlite` |
+| `cloud` *(Pro only)* | `GET <CLOUD_URL>/api/health` with `Authorization: Bearer qs_…` |
+
+## Response shape
+
+```ts
+interface HealthResponse {
+  status: 'ok' | 'degraded';
+  mode:   'free' | 'pro';
+  services: Record<string, ServiceHealth>;
+}
+
+interface ServiceHealth {
+  ok:          boolean;
+  responseMs?: number;   // present on success
+  error?:      string;   // present on failure
+}
+```
+
+`status` is `degraded` whenever any single probe failed; otherwise `ok`. The HTTP response code is **always 200** — inspect the JSON body to determine actual health.
+
+## Free tier
+
+```json
+{
+  "status": "ok",
+  "mode":   "free",
+  "services": {
+    "ollama": { "ok": true, "responseMs": 12 },
+    "sqlite": { "ok": true, "responseMs": 1 }
+  }
+}
+```
+
+## Pro tier
+
+```json
+{
+  "status": "ok",
+  "mode":   "pro",
+  "services": {
+    "ollama": { "ok": true, "responseMs": 11 },
+    "sqlite": { "ok": true, "responseMs": 1 },
+    "cloud":  { "ok": true, "responseMs": 84 }
+  }
+}
+```
+
+## Degraded example
+
+```json
+{
+  "status": "degraded",
+  "mode":   "free",
+  "services": {
+    "ollama": { "ok": false, "error": "Ollama health check failed: 502" },
+    "sqlite": { "ok": true, "responseMs": 1 }
+  }
+}
+```
+
+## Use cases
+
+- Kubernetes / Docker readiness probes (parse `services.<name>.ok`)
+- CI pre-flight checks before running an integration suite
+- A simple ping for "is QuickSlug running?" from your own UI
+- The [`quickslug doctor`](../cli/doctor) command uses this internally

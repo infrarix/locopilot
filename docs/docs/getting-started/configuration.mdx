@@ -1,0 +1,82 @@
+---
+sidebar_position: 3
+title: Configuration
+description: Environment variables, config files, and how QuickSlug detects whether you're on the Free or Pro tier.
+---
+
+# Configuration
+
+All persistent state for the CLI lives under `~/.quickslug/`.
+
+```text
+~/.quickslug/
+├── db.sqlite        # local inference + training history (Free tier)
+├── .env             # environment variables loaded by every command
+└── config.json      # Pro-tier token + tunnel URL cache (mode 0600)
+```
+
+## `.env` — environment variables
+
+Created by [`quickslug init`](../cli/init). Loaded by `paths.loadEnv()` at the start of every CLI command and by the API server.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `API_PORT` | `8080` | Port the local API listens on |
+| `OLLAMA_HOST` | `http://localhost:11434` | Where to reach Ollama |
+| `SQLITE_PATH` | `~/.quickslug/db.sqlite` | Local DB file |
+| `QUICKSLUG_CLOUD_URL` | (unset) | Override for the cloud control-plane URL (legacy / local dev). Wins over `INFRARIX_API_URL`. |
+| `INFRARIX_API_URL` | (unset) | Same role as above on the unified Infrarix Platform backend. |
+| `RATE_LIMIT_RPM` | `60` | Default per-key rate limit for **Pro** requests (Free tier is unrate-limited locally). The cloud enforces the real limit. |
+
+The CLI's cloud client falls back to `https://api.infrarix.com` when neither override is set — the unified Infrarix Platform backend preserves QuickSlug's `/api/*` contract end-to-end.
+
+## `config.json` — Pro credentials
+
+Written by [`quickslug login`](../cli/login). Removed by [`quickslug logout`](../cli/logout).
+
+```json
+{
+  "token": "qs_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "tunnel": {
+    "url": "https://something.trycloudflare.com",
+    "updatedAt": "2026-05-09T14:32:11.000Z"
+  }
+}
+```
+
+The file mode is `0600` so only the current user can read it.
+
+## Tier detection
+
+Tier is determined **purely client-side** by the presence of a `qs_…` token in `config.json`:
+
+```ts
+// src/cloud/client.ts
+export function readCloudConfig(): QuickSlugConfig | null {
+  // ... reads ~/.quickslug/config.json
+  if (typeof cfg.token === 'string' && cfg.token.startsWith('qs_')) {
+    return { token: cfg.token };
+  }
+  return null;
+}
+
+export function isProUser(): boolean {
+  return getCloudToken() !== null;
+}
+```
+
+`isProUser()` proves the user has **logged in**, not that they have an active Pro subscription. Subscription status is enforced server-side and may return `403 pro_subscription_required` even with a valid token — the cloud client surfaces that as a `ProSubscriptionRequiredError` with the upgrade URL. There is no offline cache of subscription state.
+
+(`quickslug login` separately requires the token to be at least 20 characters before saving it — a sanity check on copy-paste, not a security guarantee.)
+
+## Server flags
+
+`quickslug start` accepts a single flag:
+
+```bash
+quickslug start --port 8081
+# or
+API_PORT=8081 quickslug start
+```
+
+The flag wins over the env var. See [`quickslug start`](../cli/start).

@@ -1,0 +1,115 @@
+---
+sidebar_position: 1
+title: Training configuration
+description: The TrainingConfig schema, defaults, and a complete example.
+---
+
+# Training configuration
+
+Every fine-tuning job is defined by a JSON file matching the `TrainingConfig` interface.
+
+Source: [`src/training/types.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/training/types.ts)
+
+## Schema
+
+```ts
+type Framework = 'unsloth' | 'axolotl' | 'mlx';
+
+interface TrainingConfig {
+  framework:            Framework;
+  baseModel:            string;   // Hugging Face repo or Ollama tag
+  datasetPath:          string;   // .jsonl file (Alpaca or ShareGPT)
+  outputDir:            string;   // where to save the adapter
+  epochs:               number;
+  batchSize:            number;
+  gradientAccumulation: number;
+  learningRate:         number;
+  loraR:                number;
+  loraAlpha:            number;
+  maxSeqLength:         number;
+}
+```
+
+The four **required** fields are `framework`, `baseModel`, `datasetPath`, `outputDir`. Everything else has a default.
+
+## Defaults
+
+```ts
+export const TRAINING_DEFAULTS = {
+  epochs:               3,
+  batchSize:            2,    // conservative for consumer VRAM
+  gradientAccumulation: 4,
+  learningRate:         2e-4,
+  loraR:                8,    // smaller rank = less memory
+  loraAlpha:            16,
+  maxSeqLength:         2048,
+};
+```
+
+These defaults target a 16 GB consumer GPU. Bump `batchSize` and `loraR` if you have more VRAM, lower them if you're hitting OOM.
+
+## Minimal example
+
+```json
+{
+  "framework": "unsloth",
+  "baseModel": "meta-llama/Meta-Llama-3-8B",
+  "datasetPath": "./data/alpaca.jsonl",
+  "outputDir":   "./out/llama3-finetune"
+}
+```
+
+`datasetPath` and `outputDir` may be relative — the CLI resolves them against the **directory of the config file**, not the current working directory. This keeps configs portable.
+
+## Full example
+
+```json
+{
+  "framework": "unsloth",
+  "baseModel": "meta-llama/Meta-Llama-3-8B",
+  "datasetPath": "./data/customer-support.jsonl",
+  "outputDir":   "./out/support-bot",
+  "epochs": 5,
+  "batchSize": 4,
+  "gradientAccumulation": 2,
+  "learningRate": 1e-4,
+  "loraR": 16,
+  "loraAlpha": 32,
+  "maxSeqLength": 4096
+}
+```
+
+## Submit it
+
+```bash
+quickslug train --config train.json          # Free — local in-process
+quickslug train --config train.json --cloud  # Pro  — QuickSlug Cloud
+```
+
+See [`quickslug train`](../cli/train) for the full command surface.
+
+## Adapter selection
+
+The framework you pick maps to a Python runner:
+
+| Framework | Runner | Best for |
+|---|---|---|
+| `unsloth` | [`src/training/adapters/unsloth_runner.py`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/training/adapters/unsloth_runner.py) | Linux / Windows with NVIDIA GPU; ~2× faster than vanilla HF Trainer |
+| `axolotl` | [`src/training/adapters/axolotl_runner.py`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/training/adapters/axolotl_runner.py) | More configuration knobs; multi-GPU |
+| `mlx` | [`src/training/adapters/mlx_runner.py`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/training/adapters/mlx_runner.py) | Apple Silicon (auto-selected on `darwin/arm64`) |
+
+See [Adapters](adapters) for installation and platform notes.
+
+## Output
+
+When training finishes, `outputDir` contains:
+
+```text
+out/llama3-finetune/
+├── adapter_config.json
+├── adapter_model.safetensors
+├── tokenizer.json
+└── training_args.json
+```
+
+The `output_path` field on the job row points at this directory.

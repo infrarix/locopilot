@@ -1,0 +1,111 @@
+---
+sidebar_position: 2
+title: Quickstart
+description: Go from zero to a streaming OpenAI-compatible chat completion in five minutes.
+---
+
+# Quickstart
+
+By the end of this page you will have a streaming, OpenAI-compatible chat completion running entirely on your laptop.
+
+## 1. Install
+
+```bash
+npm install -g quickslug
+quickslug init
+```
+
+See [Installation](installation) if `init` reports a missing dependency.
+
+## 2. Pull a model
+
+```bash
+quickslug models pull llama3:8b
+```
+
+You can use any [Ollama-compatible model](https://ollama.com/library): `llama3.1`, `mistral`, `qwen2.5`, `phi3`, `gemma2`, `codellama`, etc.
+
+## 3. Start the server
+
+```bash
+quickslug start
+# 🐌 QuickSlug API running on port 8080
+```
+
+Leave this running. In a second terminal:
+
+```bash
+curl http://localhost:8080/v1/quickslug/health
+# { "status": "ok", "ollama": "ok", "sqlite": "ok" }
+```
+
+## 4. Send a chat completion
+
+### curl
+
+```bash
+curl -N http://localhost:8080/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "llama3:8b",
+    "messages": [{ "role": "user", "content": "Hello!" }],
+    "stream": true
+  }'
+```
+
+### Node.js (OpenAI SDK)
+
+```ts
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'http://localhost:8080/v1',
+  apiKey: 'not-needed', // free tier accepts any value
+});
+
+const stream = await client.chat.completions.create({
+  model: 'llama3:8b',
+  messages: [{ role: 'user', content: 'Hello!' }],
+  stream: true,
+});
+
+for await (const chunk of stream) {
+  process.stdout.write(chunk.choices[0]?.delta?.content ?? '');
+}
+```
+
+### Python (OpenAI SDK)
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:8080/v1",
+    api_key="not-needed",
+)
+
+stream = client.chat.completions.create(
+    model="llama3:8b",
+    messages=[{"role": "user", "content": "Hello!"}],
+    stream=True,
+)
+
+for chunk in stream:
+    print(chunk.choices[0].delta.content or "", end="")
+```
+
+## 5. (Optional) Enable Pro
+
+If you want **remote GPU fallback** for models you haven't pulled, **cloud training** with live log streaming, or **Cloudflare tunnels**, link your machine to QuickSlug Cloud:
+
+```bash
+quickslug login --key qs_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+Tier detection is local — Pro features unlock as soon as a `qs_…` token is present in `~/.quickslug/config.json`. See [`quickslug login`](../cli/login).
+
+## What's next
+
+- [API reference → /v1/chat/completions](../api/chat-completions)
+- [Fine-tune a model](../training/configuration)
+- [Expose your local API to the internet](../cli/expose)

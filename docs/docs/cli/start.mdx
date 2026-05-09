@@ -1,0 +1,80 @@
+---
+sidebar_position: 2
+title: quickslug start
+description: Boot the local Fastify API server.
+---
+
+# `quickslug start`
+
+> Start the QuickSlug local API server.
+
+Source: [`src/cli/commands/start.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/start.ts) · [`src/api/index.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/index.ts)
+
+## Synopsis
+
+```bash
+quickslug start [--port <port>]
+```
+
+| Flag | Default | Description |
+|---|---|---|
+| `-p, --port <port>` | `8080` (or `$API_PORT`) | Port the API listens on |
+
+## Behaviour
+
+1. Loads `~/.quickslug/.env` and aborts with a clear error if `~/.quickslug/db.sqlite` is missing — that means [`quickslug init`](init) has not been run.
+2. Resolves the API entry point:
+    - **Production** — `dist/api/index.js` (the compiled output)
+    - **Development** — falls back to `ts-node src/api/index.ts` if `dist/` doesn't exist
+3. Spawns the Fastify process with `stdio: 'inherit'` so logs stream directly to your terminal.
+4. Forwards `SIGINT` / `SIGTERM` to the child for clean shutdown.
+
+## Output
+
+```text
+🐌 QuickSlug
+
+  Starting QuickSlug on port 8080...
+
+  Entry: /Users/you/.../node_modules/quickslug/dist/api/index.js
+
+🐌 Starting in Free Tier mode (Local SQLite)
+{"level":30,"time":..., "msg":"Server listening at http://0.0.0.0:8080"}
+🐌 QuickSlug API running on port 8080
+```
+
+If a Pro token is present, the banner reads `Starting in Pro Tier mode (Cloud-augmented)` instead — the Pro/Free check happens at module load via `isProUser()`.
+
+## What's actually served
+
+| Route | Auth | Notes |
+|---|---|---|
+| `POST /v1/chat/completions` | optional | OpenAI-compatible — SSE streaming + JSON. A `qs_` token enables remote-GPU fallback. |
+| `POST /v1/completions` | optional | Legacy completions endpoint — same routing as `chat/completions` |
+| `GET  /v1/models` | public | Local Ollama models; merged with cloud catalog if a `qs_` token is present |
+| `GET  /v1/quickslug/health` | public | Heartbeat (Ollama + SQLite probes; adds `cloud` probe on Pro) |
+| `* /v1/quickslug/training/*` | optional | Runs in-process locally; auto-proxies to cloud when `Authorization: Bearer qs_…` is set |
+
+The Fastify pipeline is:
+
+1. `onRequest` → validates `Authorization` (skipped for `/v1/models` and `/v1/quickslug/health`). Non-`qs_` headers are treated as anonymous (Free).
+2. `preHandler` → in-memory token-bucket rate limiter; **no-ops for Free tier**, applies a high `9999/min` ceiling to Pro (real limit enforced cloud-side).
+3. `setErrorHandler` → serialises `AppError` instances into JSON.
+
+See [API reference](../api/chat-completions) for the full surface.
+
+## Stopping
+
+`Ctrl-C` once. The CLI catches the signal and forwards it to the API process; both exit cleanly.
+
+## Troubleshooting
+
+**`Database not found.`** — you skipped `quickslug init`. Run it once.
+
+**`Could not locate API entry point.`** — you're working from source and forgot to build:
+
+```bash
+npm run build
+```
+
+**Port already in use** — Fastify will throw `EADDRINUSE`. Pick a different port: `quickslug start --port 8090`.

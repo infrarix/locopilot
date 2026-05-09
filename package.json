@@ -1,0 +1,81 @@
+{
+  "name": "quickslug",
+  "version": "1.0.0",
+  "description": "Local-first OpenAI-compatible AI platform",
+  "license": "MIT",
+  "private": false,
+  "homepage": "https://quickslug.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quickslug/quickslug.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "quickslug": "./dist/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc && node -e \"const fs=require('fs');['mlx_runner.py','unsloth_runner.py','axolotl_runner.py'].forEach(f=>{const src='src/training/adapters/'+f;const dst='dist/training/adapters/'+f;if(fs.existsSync(src)){fs.mkdirSync('dist/training/adapters',{recursive:true});fs.copyFileSync(src,dst);}})\"",
+    "dev": "ts-node src/api/index.ts",
+    "start": "node dist/api/index.js",
+    "lint": "eslint 'src/**/*.{ts,js}'",
+    "format": "prettier --write \"src/**/*.{ts,js,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json,md}\"",
+    "typecheck": "tsc --noEmit",
+    "changeset": "changeset",
+    "changeset:status": "changeset status",
+    "changeset:autogenerate": "node .github/changeset-autogenerate.mjs",
+    "changeset:version": "node .github/changeset-version.js",
+    "changeset:publish": "npm run build && changeset publish",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,js}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "src/**/*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.0",
+    "chalk": "^4.1.2",
+    "commander": "^12.0.0",
+    "dotenv": "^16.4.0",
+    "enquirer": "^2.4.1",
+    "fastify": "^5.8.5",
+    "js-yaml": "^4.1.0",
+    "node-fetch": "^2.7.0",
+    "ora": "^5.4.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.27.9",
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.14.0",
+    "@types/sqlite3": "^3.1.11",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@vercel/ncc": "^0.38.4",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

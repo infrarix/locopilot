@@ -1,0 +1,131 @@
+---
+sidebar_position: 1
+title: quickslug init
+description: One-time setup — installs Ollama, verifies Python 3, creates the local SQLite database, and writes ~/.quickslug/.env.
+---
+
+# `quickslug init`
+
+> Initialize QuickSlug — installs Ollama, sets up local database, writes config.
+
+Source: [`src/cli/commands/init.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/init.ts)
+
+## Synopsis
+
+```bash
+quickslug init
+```
+
+No flags. Idempotent — safe to re-run.
+
+## What it does
+
+The command runs four sequential steps. Each step prints its own success/failure line and the entire run takes ~10 seconds on a warm machine.
+
+### 1. Ollama
+
+Probes `http://localhost:11434` and the `ollama` binary:
+
+| State | Action |
+|---|---|
+| Already installed and running | ✔ printed, skip |
+| Installed but not running | starts the service (`brew services start ollama`, `systemctl --user start ollama`, or background `ollama serve`) and waits up to 10 s for it to respond |
+| Not installed | auto-installs via `brew install --cask ollama` (macOS), `curl ... | sh` (Linux), or `winget install Ollama.Ollama` (Windows) |
+
+If auto-install fails, `init` prints the manual link to https://ollama.ai/download and continues — your local DB still gets created.
+
+### 2. Python 3
+
+Verifies `python3` is reachable. On Windows the check tries `python3`, `python`, then `py`. The version must match `Python 3.x`.
+
+If missing, `init` prints platform-specific install hints:
+
+- macOS → `brew install python3`
+- Windows → https://www.python.org/downloads/
+- Linux → `sudo apt install python3`
+
+This is non-fatal — Python is only needed for [training adapters](../training/adapters).
+
+### 3. SQLite
+
+Creates `~/.quickslug/db.sqlite` (path overridable via `SQLITE_PATH`) and runs the schema:
+
+```sql
+CREATE TABLE IF NOT EXISTS inference_logs (
+  id          TEXT PRIMARY KEY,
+  api_key_id  TEXT,
+  model       TEXT NOT NULL,
+  provider    TEXT NOT NULL,
+  tokens_in   INTEGER,
+  tokens_out  INTEGER,
+  latency_ms  INTEGER,
+  ttfb_ms     INTEGER,
+  status      INTEGER,
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS training_jobs (
+  id           TEXT PRIMARY KEY,
+  framework    TEXT NOT NULL,
+  status       TEXT NOT NULL DEFAULT 'pending',
+  base_model   TEXT NOT NULL,
+  dataset_path TEXT NOT NULL,
+  output_path  TEXT,
+  config_json  TEXT NOT NULL DEFAULT '{}',
+  error        TEXT,
+  started_at   TEXT,
+  completed_at TEXT,
+  created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_training_jobs_status
+  ON training_jobs(status);
+```
+
+`CREATE TABLE IF NOT EXISTS` makes this safe to run repeatedly.
+
+### 4. `.env`
+
+If `~/.quickslug/.env` does not exist, writes:
+
+```bash
+# QuickSlug local config — edit as needed
+SQLITE_PATH=/Users/you/.quickslug/db.sqlite
+OLLAMA_HOST=http://localhost:11434
+API_PORT=8080
+
+# Uncomment to override the QuickSlug Cloud URL (for local dev):
+# QUICKSLUG_CLOUD_URL=http://localhost:8081
+```
+
+If the file already exists, it is **not** overwritten — your customisations are preserved.
+
+## Apple Silicon hint
+
+On `darwin/arm64` the final summary recommends MLX:
+
+```text
+  Apple Silicon detected — training will use the MLX adapter (mlx-lm).
+  Install: pip3 install mlx-lm
+```
+
+On every other platform it recommends the Unsloth path:
+
+```text
+  Training uses Unsloth or Axolotl (Linux/Windows).
+  Install: pip3 install unsloth trl transformers datasets
+```
+
+## Exit codes
+
+| Code | Meaning |
+|---|---|
+| `0` | Setup succeeded (or finished with a non-fatal warning like "Ollama auto-install failed") |
+| `1` | Database creation failed (the only fatal error) |
+
+## Next
+
+```bash
+quickslug models pull llama3:8b
+quickslug start
+```

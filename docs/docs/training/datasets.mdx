@@ -1,0 +1,123 @@
+---
+sidebar_position: 2
+title: Datasets
+description: Supported JSONL formats — Alpaca (instruction-tuning) and ShareGPT (multi-turn chat).
+---
+
+# Datasets
+
+QuickSlug accepts two JSONL formats out of the box. Each line in the file is a single training example. The validator runs **before** the job is enqueued — a malformed dataset fails in milliseconds rather than after a long training run.
+
+Source: [`src/training/validator.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/training/validator.ts)
+
+## Alpaca (instruction-tuning)
+
+Single-turn instruction → response pairs.
+
+```jsonl
+{"instruction": "Translate to French.", "input": "Hello, how are you?", "output": "Bonjour, comment ça va ?"}
+{"instruction": "Summarise this article in one sentence.", "input": "...", "output": "..."}
+{"instruction": "Write a haiku about debugging.", "input": "", "output": "Bug found at midnight\nStack trace points to line forty\nSemicolon mocks me"}
+```
+
+A row is recognised as Alpaca when:
+
+| Field | Required | Constraint |
+|---|---|---|
+| `instruction` | ✅ | non-empty string |
+| `output` | ✅ | non-empty string |
+| `input` | ❌ | optional — empty string is fine |
+
+## ShareGPT (multi-turn chat)
+
+Used for chat / conversation fine-tuning.
+
+```jsonl
+{"conversations": [
+  {"from": "system",  "value": "You are a helpful coding assistant."},
+  {"from": "human",   "value": "How do I sort a list in Python?"},
+  {"from": "gpt",     "value": "Use the sorted() built-in: `sorted(my_list)`."}
+]}
+{"conversations": [
+  {"from": "human", "value": "What's 2+2?"},
+  {"from": "gpt",   "value": "4."}
+]}
+```
+
+A row is recognised as ShareGPT when:
+
+| Field | Required | Constraint |
+|---|---|---|
+| `conversations` | ✅ | non-empty array |
+| `conversations[0].from` | ✅ | non-empty string (`system`, `human`, `gpt` is the convention) |
+| `conversations[0].value` | ✅ | non-empty string |
+
+The validator only inspects the **first turn**. Downstream training adapters expect every turn to follow the same shape — runtime errors there land on you.
+
+## Validation rules
+
+`validateDataset()` enforces:
+
+| Rule | Constant |
+|---|---|
+| Minimum 10 examples (lines) | `MIN_DATASET_EXAMPLES = 10` |
+| Inspect first 5 lines for shape & format consistency | `DATASET_VALIDATION_LINES = 5` |
+| First valid line decides the format; subsequent lines must use the **same** format | — |
+
+Files larger than 5 rows are not exhaustively validated — the assumption is that homogeneous JSONL is produced by tooling, not handwritten.
+
+## Validation errors
+
+Every error includes the offending line number when applicable:
+
+| Message | Cause |
+|---|---|
+| `Dataset not found: <path>` | File doesn't exist |
+| `Dataset file is empty` | File is zero-byte or only whitespace |
+| `Dataset too small — found N examples, minimum 10 required` | Fewer than 10 lines |
+| `Line N: empty line in dataset` | Blank line within the first 5 |
+| `Line N: invalid JSON — <preview>...` | Line is not valid JSON |
+| `Line N: unrecognised format. Expected alpaca (instruction/output) or sharegpt (conversations[])` | Object doesn't match either shape |
+| `Line N: mixed formats — line 1 is alpaca but line N is sharegpt. Use a single format throughout.` | First line was Alpaca, later line was ShareGPT (or vice versa) |
+
+## Recommended sizes
+
+| Goal | Rows |
+|---|---|
+| Quick sanity check | 10 – 50 |
+| Format / tone tweak | 200 – 2,000 |
+| Domain adaptation | 5,000 – 50,000 |
+| New capability | 50,000+ |
+
+QLoRA-style training (which Unsloth and Axolotl both use under the hood with the default `loraR: 8`) is sample-efficient — you usually don't need anywhere near as much data as you would for full fine-tuning.
+
+## Build a dataset programmatically
+
+```ts
+import { writeFileSync } from 'fs';
+
+const rows = [
+  { instruction: 'Translate to French.', input: 'Hello',   output: 'Bonjour'   },
+  { instruction: 'Translate to French.', input: 'Goodbye', output: 'Au revoir' },
+  // … at least 10 rows
+];
+
+writeFileSync(
+  'data/translations.jsonl',
+  rows.map(r => JSON.stringify(r)).join('\n') + '\n',
+);
+```
+
+```python
+import json
+
+rows = [
+    {"instruction": "Translate to French.", "input": "Hello",   "output": "Bonjour"},
+    {"instruction": "Translate to French.", "input": "Goodbye", "output": "Au revoir"},
+    # … at least 10 rows
+]
+
+with open("data/translations.jsonl", "w") as f:
+    for r in rows:
+        f.write(json.dumps(r) + "\n")
+```

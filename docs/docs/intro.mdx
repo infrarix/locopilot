@@ -1,0 +1,54 @@
+---
+sidebar_position: 1
+title: Welcome
+description: QuickSlug is a local-first, OpenAI-compatible AI inference and fine-tuning platform. Run models locally, fall back to remote GPU, and train on your data — all from one CLI.
+---
+
+# Welcome to QuickSlug
+
+**QuickSlug** is the open-source CLI and HTTP server that lets you run AI models on your own machine, then scale to the cloud only when you need to. It is **OpenAI-compatible**, **MIT-licensed**, and ships as a single npm package.
+
+```bash
+npm install -g quickslug
+quickslug init
+quickslug start
+```
+
+That's it. Your local API is now serving `POST /v1/chat/completions` on port `8080`.
+
+## What QuickSlug gives you
+
+- 🐌 **Local-first inference** — every request is served by your own [Ollama](https://ollama.ai) runtime first. Zero latency, zero per-token cost, complete data privacy.
+- ⚡ **Smart cloud fallback** — when a model is missing locally, requests transparently route to QuickSlug Cloud (RunPod-backed serverless GPU) with a 90-second SLA.
+- 🧠 **Fine-tuning on your data** — submit Unsloth, Axolotl, or MLX (Apple Silicon) jobs through the CLI. Alpaca and ShareGPT formats are validated for you.
+- 🔌 **Drop-in OpenAI compatibility** — point any existing SDK (Python, Node.js, Go, Rust, LangChain) at `http://localhost:8080/v1` and it just works.
+- 🛠️ **One CLI for everything** — `init`, `doctor`, `start`, `models`, `train`, `logs`, `expose`, `login`, `whoami`, `usage`.
+
+## Two tiers
+
+| Tier | Auth | What you get |
+|---|---|---|
+| **Free** | none | Local Ollama inference, OpenAI-compatible API, in-process fine-tuning, SQLite storage |
+| **Pro** | `quickslug login` | Everything in Free + remote GPU fallback, cloud training (BullMQ-backed), Cloudflare tunnels, usage analytics |
+
+Tier detection is **purely client-side**: a valid `qs_` token in `~/.quickslug/config.json` enables Pro features. The local CLI never needs cloud credentials.
+
+## Where to go next
+
+- **First time?** → [Installation](getting-started/installation) → [Quickstart](getting-started/quickstart)
+- **Building an integration?** → [API reference](api/chat-completions)
+- **Fine-tuning a model?** → [Training configuration](training/configuration)
+- **Operating the stack?** → [Architecture overview](architecture/overview)
+
+## Source code
+
+The CLI and local API live in [`quickslug-public-cli/src/`](https://github.com/quickslug/quickslug/tree/main/quickslug-public-cli/src):
+
+| Folder | Purpose |
+|---|---|
+| `src/cli/` | Commander.js CLI — every command lives in `src/cli/commands/` |
+| `src/api/` | Fastify 5 HTTP gateway — OpenAI-compatible routes |
+| `src/worker/` | In-process training worker (Free tier) |
+| `src/training/` | `TrainingAdapter` interface, dataset validator, Unsloth / Axolotl / MLX adapters |
+| `src/cloud/client.ts` | Single source of truth for cloud HTTP calls (Pro tier) |
+| `src/shared/` | DB pool, Ollama runtime client, shared types |

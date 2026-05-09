@@ -1,0 +1,145 @@
+---
+sidebar_position: 4
+title: Training API
+description: HTTP routes under /v1/quickslug/training for submitting jobs, polling status, and streaming logs.
+---
+
+# Training API
+
+The local API exposes three routes under `/v1/quickslug/training/*` for fine-tuning jobs.
+
+Source: [`src/api/routes/training.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/routes/training.ts) · [`src/worker/handlers.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/worker/handlers.ts)
+
+| Route | Method | Purpose |
+|---|---|---|
+| `/v1/quickslug/training/jobs` | `POST` | Submit a new training job |
+| `/v1/quickslug/training/jobs/:id` | `GET` | Get current status of a job |
+| `/v1/quickslug/training/jobs/:id/logs` | `GET` | Stream live logs as SSE |
+
+## Auto-routing
+
+Each handler inspects the `Authorization` header:
+
+| Header | Behaviour |
+|---|---|
+| Starts with `Bearer qs_` | The handler proxies the request verbatim to QuickSlug Cloud (`/api/train` / `/api/train/:id` / `/api/train/:id/logs`). A `403 pro_subscription_required` from upstream is surfaced verbatim — there is **no silent fallback** to local execution. |
+| Anything else (or no header) | The job runs in-process via [`BasicWorker`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/worker/) on the local machine. |
+
+The `quickslug train` CLI deliberately doesn't send the local Pro token to the local API — when you use `--cloud`, the CLI calls QuickSlug Cloud directly and bypasses the local API entirely.
+
+## `POST /v1/quickslug/training/jobs`
+
+Submit a new fine-tuning job.
+
+### Request (Free / local in-process path)
+
+```json
+{
+  "framework": "unsloth",
+  "baseModel": "meta-llama/Meta-Llama-3-8B",
+  "datasetPath": "/abs/path/to/dataset.jsonl",
+  "outputDir":   "/abs/path/to/output/",
+  "epochs": 3,
+  "batchSize": 2,
+  "gradientAccumulation": 4,
+  "learningRate": 0.0002,
+  "loraR": 8,
+  "loraAlpha": 16,
+  "maxSeqLength": 2048
+}
+```
+
+The four required fields are `framework`, `baseModel`, `datasetPath`, `outputDir`. Everything else falls back to `TRAINING_DEFAULTS` (see [Configuration](../training/configuration#defaults)).
+
+`framework` must be one of `unsloth`, `axolotl`, `mlx` (`VALID_FRAMEWORKS`).
+
+### Validation
+
+Before the row is inserted into `training_jobs`, the local handler runs:
+
+1. `framework` is one of `VALID_FRAMEWORKS`
+2. `baseModel`, `datasetPath`, `outputDir` are non-empty strings
+3. The dataset passes [`validateDataset()`](../training/datasets#validation) — minimum 10 examples, first 5 lines parse as Alpaca **or** ShareGPT (no mixing)
+
+A failed validation returns `400` immediately, before anything is enqueued — so a malformed dataset fails in milliseconds, not after a long training run.
+
+### Response (Free path)
+
+```http
+HTTP/1.1 201 Created
+```
+
+```json
+{
+  "id": "<uuid>",
+  "status": "pending",
+  "framework": "unsloth",
+  "base_model": "meta-llama/Meta-Llama-3-8B",
+  "dataset_path": "/abs/path/...",
+  "created_at": "2026-05-09T14:32:00.000Z"
+}
+```
+
+`id` is a `crypto.randomUUID()` value generated locally — SQLite has no `INSERT … RETURNING`. The executor then runs the job out-of-band (`fire-and-forget`).
+
+## `GET /v1/quickslug/training/jobs/:id`
+
+Returns the latest row from `training_jobs`:
+
+```json
+{
+  "id":           "<uuid>",
+  "framework":    "unsloth",
+  "status":       "running",
+  "base_model":   "meta-llama/Meta-Llama-3-8B",
+  "output_path":  null,
+  "error":        null,
+  "started_at":   "2026-05-09T14:32:11Z",
+  "completed_at": null,
+  "created_at":   "2026-05-09T14:32:00Z"
+}
+```
+
+Status values: `pending`, `running`, `completed`, `failed`. When `status === 'completed'`, `output_path` points at the saved adapter directory.
+
+A non-existent ID returns `404 { "error": "Job not found" }`.
+
+## `GET /v1/quickslug/training/jobs/:id/logs`
+
+Server-Sent Events stream of live log lines from the worker.
+
+```text
+Content-Type: text/event-stream
+Cache-Control: no-cache
+Connection: keep-alive
+
+data: [unsloth] Loading meta-llama/Meta-Llama-3-8B ...
+data: [unsloth] Step 50/300 — loss: 1.42
+data: [unsloth] Step 100/300 — loss: 0.98
+data: Job completed
+data: [DONE]
+```
+
+Sentinels:
+
+- `data: Job completed` (or `failed`) is emitted by the status-poller on the server.
+- `data: [DONE]` marks end-of-stream — the connection is closed immediately afterwards.
+
+There's a small race between job creation and SSE connect — the handler waits up to 5 s (`LOG_EMITTER_WAIT_MS`) for the executor to register a log emitter before giving up:
+
+```text
+data: No active log stream — job may have completed or not yet started
+data: [DONE]
+```
+
+This is the endpoint that powers [`quickslug logs`](../cli/logs).
+
+## Errors
+
+| Status | Body shape |
+|---|---|
+| `400` | `{ "error": "framework is required and must be one of: unsloth, axolotl, mlx" }` |
+| `400` | `{ "error": "Dataset too small — found 3 examples, minimum 10 required" }` |
+| `403` | `{ "error": "pro_subscription_required", "message": "...", "upgrade_url": "..." }` (cloud-proxy path only) |
+| `404` | `{ "error": "Job not found" }` |
+| `500` | `{ "error": "Cloud backend unreachable: …" }` (cloud-proxy path only) |
