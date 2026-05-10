@@ -3,7 +3,7 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 import { ArrowRight, Terminal, Star } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import AnimatedSlug from '../marketing/AnimatedSlug';
+import AnimatedLoco from '../marketing/AnimatedLoco';
 import ParticleField from '../marketing/ParticleField';
 import FadeIn from '../ui/FadeIn';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
@@ -19,7 +19,7 @@ export default function Hero() {
     offset: ['start start', 'end start'],
   });
 
-  const slugY = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const logoY = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const gridY = useTransform(scrollYProgress, [0, 1], [0, 40]);
   const particleY = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
@@ -56,8 +56,8 @@ export default function Hero() {
         </FadeIn>
 
         <FadeIn delay={0.2} direction="none">
-          <motion.div className="flex justify-center mb-6" style={{ y: slugY }}>
-            <AnimatedSlug
+          <motion.div className="flex justify-center mb-6" style={{ y: logoY }}>
+            <AnimatedLoco
               size={typeof window !== 'undefined' && window.innerWidth < 640 ? 200 : 280}
               enableCursorTracking
             />
@@ -120,7 +120,7 @@ export default function Hero() {
             <Terminal size={15} className="text-brand-violet flex-shrink-0" />
             <code className="text-xs sm:text-sm text-gray-300 whitespace-nowrap">
               <span className="text-brand-muted">$</span> <span className="text-brand-violet">npm</span> install -g
-              locopilot &amp;&amp; <span className="text-brand-violet">locopilot</span>{' '}
+              @infrarix/locopilot &amp;&amp; <span className="text-brand-violet">locopilot</span>{' '}
               <span className="text-brand-blue">init</span>
             </code>
             <span className="hidden sm:inline text-[10px] text-brand-muted group-hover:opacity-100 opacity-0 transition-opacity ml-2 flex-shrink-0">

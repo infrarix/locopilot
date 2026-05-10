@@ -2,7 +2,7 @@ import Link from '@docusaurus/Link';
 import { Github, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import AnimatedSlug from '../marketing/AnimatedSlug';
+import AnimatedLoco from '../marketing/AnimatedLoco';
 import FadeIn from '../ui/FadeIn';
 
 export default function CtaFooter() {
@@ -21,7 +21,7 @@ export default function CtaFooter() {
               if (nitroBurst) setTimeout(() => setNitroBurst(false), 300);
             }}
           >
-            <AnimatedSlug size={160} enableCursorTracking />
+            <AnimatedLoco size={160} enableCursorTracking />
           </motion.div>
 
           {nitroBurst && (

@@ -33,22 +33,22 @@ pnpm-debug.log*
 
 # ───────────────────────────────────────────────────────────
 # Environment / secrets
-# Never commit local env files or QuickSlug auth state.
+# Never commit local env files or LocoPilot auth state.
 # ───────────────────────────────────────────────────────────
 .env
 .env.*
 !.env.example
 .envrc
 
-# Local QuickSlug state copied into the repo for testing.
-# Real state lives in ~/.quickslug/, but be defensive.
-.quickslug/
-quickslug-config.json
+# Local LocoPilot state copied into the repo for testing.
+# Real state lives in ~/.locopilot/, but be defensive.
+.locopilot/
+locopilot-config.json
 *.qs_token
 
 # ───────────────────────────────────────────────────────────
 # Local databases
-# Free tier writes to ~/.quickslug/db.sqlite; guard against
+# Free tier writes to ~/.locopilot/db.sqlite; guard against
 # stray copies inside the repo.
 # ───────────────────────────────────────────────────────────
 *.sqlite
@@ -61,11 +61,11 @@ quickslug-config.json
 # Training / model artifacts
 # These can be huge — never accidentally commit them.
 # ───────────────────────────────────────────────────────────
-checkpoints/
-runs/
-outputs/
-training-output/
-adapters/
+/checkpoints/
+/runs/
+/outputs/
+/training-output/
+/adapters/
 *.gguf
 *.safetensors
 *.bin

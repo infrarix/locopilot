@@ -2,7 +2,7 @@
 
 Thanks for your interest in contributing to **LocoPilot** — the local-first, OpenAI-compatible AI platform. Bug reports, feature requests, docs fixes, and code changes are all welcome.
 
-This repository (locopilot-public-cli`) is the MIT-licensed open-source CLI + local API. The hosted Pro control plane (`locopilot-core-backend`) is a separate, closed-source service and is out of scope for this repo.
+This repository (`locopilot-public-cli`) is the MIT-licensed open-source CLI + local API. The hosted Pro control plane (`locopilot-core-backend`) is a separate, closed-source service and is out of scope for this repo.
 
 ## Table of Contents
 

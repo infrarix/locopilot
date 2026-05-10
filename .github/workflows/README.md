@@ -81,7 +81,7 @@ npm run changeset       # interactive: pick bump + write description
 
 ## Note about the parent monorepo
 
-While this directory still lives inside the `Quickslug/` parent monorepo (now LocoPilot), npm workspaces and `@manypkg/get-packages` may climb up and detect the parent as the project root, which trips up `npx changeset` locally (it'll complain "There is no .changeset folder"). The fix is one of:
+While this directory still lives inside the `LocoPilot/` parent monorepo, npm workspaces and `@manypkg/get-packages` may climb up and detect the parent as the project root, which trips up `npx changeset` locally (it'll complain "There is no .changeset folder"). The fix is one of:
 
 - Use this directory as its own git repo (the intended end state) — every tool then sees this as the root and Just Works.
 - For local-only convenience inside the monorepo, run with an explicit `cwd`:
