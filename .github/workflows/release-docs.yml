@@ -3,28 +3,14 @@ name: Deploy Documentation
 on:
   push:
     branches: [main]
-    paths:
-      - 'docs/**'
-      - '.github/workflows/release-docs.yml'
-  workflow_dispatch: {}
-
-# GitHub Pages deployment — one in flight at a time.
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
 
 jobs:
-  build:
-    name: Build docs site
+  deploy-docs:
+    name: Build & Deploy Docusaurus
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: docs
+    permissions:
+      contents: write
+      pages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,29 +18,35 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: docs/package-lock.json
+          node-version: 24
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies & build docs
+        run: |
+          cd docs
+          npm install
+          npm run build
 
-      - name: Build Docusaurus
-        run: npm run build
+      - name: Configure Git
+        run: |
+          git config --local user.email "github-actions@github.com"
+          git config --local user.name "GitHub Actions"
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/build
-
-  deploy:
-    name: Deploy to GitHub Pages
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy to gh-pages
+        run: |
+          mkdir -p /tmp/docs-build
+          shopt -s dotglob
+          cp -r docs/build/* /tmp/docs-build/
+          shopt -u dotglob
+          git stash push || true
+          git checkout gh-pages || git checkout -b gh-pages
+          rm -rf *
+          cp -r /tmp/docs-build/* .
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add . -f
+            git commit -m "chore(docs): deploy documentation to gh-pages"
+            git push origin gh-pages --force
+          else
+            echo "No documentation changes to deploy in repo"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
