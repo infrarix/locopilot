@@ -1,6 +1,0 @@
-[
-  { "id": "llama3:70b", "provider": "runpod", "description": "Meta Llama 3 70B" },
-  { "id": "mistral:7b", "provider": "runpod", "description": "Mistral 7B" },
-  { "id": "mixtral:8x7b", "provider": "runpod", "description": "Mixtral 8x7B MoE" },
-  { "id": "codellama:34b", "provider": "runpod", "description": "Code Llama 34B" }
-]
