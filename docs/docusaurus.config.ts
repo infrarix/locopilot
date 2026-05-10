@@ -11,10 +11,10 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://locopilot.com',
-  baseUrl: '/',
+  url: 'https://infrarix.github.io',
+  baseUrl: '/locopilot/',
 
-  organizationName: 'locopilot',
+  organizationName: 'Infrarix',
   projectName: 'locopilot',
 
   onBrokenLinks: 'warn',
@@ -49,7 +49,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: 'docs',
-          editUrl: 'https://github.com/locopilot/locopilot/tree/main/locopilot-public-cli/docs/',
+          editUrl: 'https://github.com/Infrarix/locopilot/tree/main/docs/',
         },
         blog: false,
         theme: {
@@ -95,7 +95,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://github.com/locopilot/locopilot',
+          href: 'https://github.com/Infrarix/locopilot',
           label: 'GitHub',
           position: 'right',
         },
@@ -123,8 +123,8 @@ const config: Config = {
         {
           title: 'Community',
           items: [
-            { label: 'GitHub', href: 'https://github.com/locopilot/locopilot' },
-            { label: 'Issues', href: 'https://github.com/locopilot/locopilot/issues' },
+            { label: 'GitHub', href: 'https://github.com/Infrarix/locopilot' },
+            { label: 'Issues', href: 'https://github.com/Infrarix/locopilot/issues' },
             { label: 'Discord', href: 'https://discord.gg/locopilot' },
           ],
         },
