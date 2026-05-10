@@ -11,12 +11,12 @@ import { printBanner } from '../utils/banner';
 import { query } from '../../shared';
 
 const cmd = new Command('init').description(
-  'Initialize QuickSlug — installs Ollama, sets up local database, writes config',
+  'Initialize LocoPilot — installs Ollama, sets up local database, writes config',
 );
 
 cmd.action(async () => {
   printBanner();
-  console.log(chalk.bold('  QuickSlug Setup\n'));
+  console.log(chalk.bold('  LocoPilot Setup\n'));
 
   paths.ensureHomeDir();
 
@@ -50,13 +50,13 @@ cmd.action(async () => {
     fs.writeFileSync(
       paths.ENV_PATH,
       [
-        '# QuickSlug local config — edit as needed',
+        '# LocoPilot local config — edit as needed',
         `SQLITE_PATH=${paths.SQLITE_PATH}`,
         'OLLAMA_HOST=http://localhost:11434',
         'API_PORT=8080',
         '',
-        '# Uncomment to override the QuickSlug Cloud URL (for local dev):',
-        '# QUICKSLUG_CLOUD_URL=http://localhost:8081',
+        '# Uncomment to override the LocoPilot Cloud URL (for local dev):',
+        '# LOCOPILOT_CLOUD_URL=http://localhost:8081',
       ].join('\n') + '\n',
       { encoding: 'utf8' },
     );
@@ -76,11 +76,11 @@ cmd.action(async () => {
     console.log(chalk.gray('  Install: ') + chalk.white('pip3 install unsloth trl transformers datasets\n'));
   }
 
-  console.log(chalk.gray('  Run ') + chalk.white('quickslug start') + chalk.gray(' to launch the local API.'));
-  console.log(chalk.gray('  Run ') + chalk.white('quickslug models pull llama3') + chalk.gray(' to download a model.'));
+  console.log(chalk.gray('  Run ') + chalk.white('locopilot start') + chalk.gray(' to launch the local API.'));
+  console.log(chalk.gray('  Run ') + chalk.white('locopilot models pull llama3') + chalk.gray(' to download a model.'));
   console.log(
     chalk.gray('  Run ') +
-      chalk.white('quickslug login') +
+      chalk.white('locopilot login') +
       chalk.gray(' to enable Pro tier (cloud GPU, remote models).\n'),
   );
 });
@@ -201,7 +201,7 @@ async function ensureOllamaRunning(platform: string): Promise<void> {
   }
 
   spinner.warn(chalk.yellow('  Ollama did not respond within 10 s.'));
-  console.log(chalk.gray('  Make sure Ollama is running before using QuickSlug.'));
+  console.log(chalk.gray('  Make sure Ollama is running before using LocoPilot.'));
   console.log(chalk.gray('  On macOS/Linux: ') + chalk.white('ollama serve'));
   console.log(chalk.gray('  On Windows: open Ollama from Start menu\n'));
 }
@@ -225,7 +225,7 @@ function startOllamaBackground(): void {
 }
 
 function printOllamaInstallHint(platform: string): void {
-  console.log(chalk.gray('  Install Ollama and re-run `quickslug init`:'));
+  console.log(chalk.gray('  Install Ollama and re-run `locopilot init`:'));
   if (platform === 'darwin') {
     console.log(chalk.gray('    macOS:   ') + chalk.white('brew install --cask ollama'));
     console.log(chalk.gray('             ') + chalk.gray('or download from https://ollama.ai/download'));

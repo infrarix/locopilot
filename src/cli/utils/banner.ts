@@ -110,7 +110,7 @@ function printTagline(): void {
   const dg = chalk.hex('#2e5a10');
 
   console.log('');
-  console.log('  ' + N('⚡ QuickSlug') + '  ' + dim('v1.0') + '  ' + B('Inference. Simplified.'));
+  console.log('  ' + N('⚡ LocoPilot') + '  ' + dim('v1.0') + '  ' + B('Inference. Simplified.'));
   console.log('  ' + dg('Local-first') + dim(' · ') + dg('OpenAI Compatible') + dim(' · ') + dg('GPU Scalable'));
   console.log('');
 }

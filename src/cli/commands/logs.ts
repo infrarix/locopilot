@@ -28,7 +28,7 @@ cmd.action(async (opts: LogsOptions) => {
   const base = `http://localhost:${process.env.API_PORT ?? '8080'}`;
   const token = readToken();
 
-  const url = `${base}/v1/quickslug/training/jobs/${opts.job}/logs`;
+  const url = `${base}/v1/locopilot/training/jobs/${opts.job}/logs`;
   const headers: Record<string, string> = {};
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -39,7 +39,7 @@ cmd.action(async (opts: LogsOptions) => {
     res = await fetch(url, { headers, signal: AbortSignal.timeout(600_000) });
   } catch (err) {
     console.error(chalk.red(`  Could not connect to API: ${(err as Error).message}`));
-    console.error(chalk.gray('  Is QuickSlug running? Try: quickslug start'));
+    console.error(chalk.gray('  Is LocoPilot running? Try: locopilot start'));
     process.exit(1);
   }
 
@@ -47,7 +47,7 @@ cmd.action(async (opts: LogsOptions) => {
     const body = (await res.json().catch(() => ({}) as Record<string, unknown>)) as { error?: string };
     console.error(chalk.red(`  API error ${res.status}:`), body.error ?? 'Unknown error');
     if (res.status === 404) {
-      console.error(chalk.gray('  Check the job ID: quickslug train --config <file>'));
+      console.error(chalk.gray('  Check the job ID: locopilot train --config <file>'));
     }
     process.exit(1);
   }
@@ -88,10 +88,10 @@ cmd.action(async (opts: LogsOptions) => {
     }
 
     console.log(chalk.gray('\n  Log stream closed. Job may still be running.'));
-    console.log(chalk.gray(`  Re-run: quickslug logs --job ${opts.job}\n`));
+    console.log(chalk.gray(`  Re-run: locopilot logs --job ${opts.job}\n`));
   } catch (err) {
     console.error(chalk.yellow(`\n  Stream ended: ${(err as Error).message}`));
-    console.error(chalk.gray(`  Re-run: quickslug logs --job ${opts.job}\n`));
+    console.error(chalk.gray(`  Re-run: locopilot logs --job ${opts.job}\n`));
   } finally {
     reader.releaseLock();
   }

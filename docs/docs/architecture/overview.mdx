@@ -1,18 +1,18 @@
 ---
 sidebar_position: 1
 title: Architecture overview
-description: How the open-source CLI talks to Ollama locally and to QuickSlug Cloud when needed.
+description: How the open-source CLI talks to Ollama locally and to LocoPilot Cloud when needed.
 ---
 
 # Architecture overview
 
-QuickSlug is an **open-core monorepo**. The MIT-licensed pieces live in [`quickslug-public-cli/`](https://github.com/quickslug/quickslug/tree/main/quickslug-public-cli) and ship to every customer. The proprietary cloud control plane (`quickslug-core-backend/`) is hosted by us and never bundled with the CLI.
+LocoPilot is an **open-core monorepo**. The MIT-licensed pieces live in [`locopilot-public-cli/`](https://github.com/locopilot/locopilot/tree/main/locopilot-public-cli) and ship to every customer. The proprietary cloud control plane (`locopilot-core-backend/`) is hosted by us and never bundled with the CLI.
 
 ## Component map
 
 ```text
                        ┌────────────────────────┐
-                       │   quickslug-public-cli │  (this repo, MIT)
+                       │   locopilot-public-cli │  (this repo, MIT)
                        │                        │
         ┌──────────────┤  src/cli/   (Commander)│
         │              │  src/api/   (Fastify)  │
@@ -24,7 +24,7 @@ QuickSlug is an **open-core monorepo**. The MIT-licensed pieces live in [`quicks
         │                        │  HTTPS (only when Pro token present)
         │                        ▼
         │              ┌────────────────────────┐
-        │              │   QuickSlug Cloud      │  (proprietary, hosted)
+        │              │   LocoPilot Cloud      │  (proprietary, hosted)
         │              │   /api/inference       │
         │              │   /api/train           │
         │              │   /api/auth/*          │
@@ -46,7 +46,7 @@ QuickSlug is an **open-core monorepo**. The MIT-licensed pieces live in [`quicks
 | Folder | Responsibility |
 |---|---|
 | `src/cli/` | Commander.js entry — every subcommand is a file under `src/cli/commands/` |
-| `src/api/` | Fastify 5 HTTP gateway. Routes: `/v1/chat/completions`, `/v1/completions`, `/v1/models`, `/v1/quickslug/health`, `/v1/quickslug/training/*` |
+| `src/api/` | Fastify 5 HTTP gateway. Routes: `/v1/chat/completions`, `/v1/completions`, `/v1/models`, `/v1/locopilot/health`, `/v1/locopilot/training/*` |
 | `src/worker/` | In-process training worker (Free tier). Single-process, no queue. |
 | `src/training/` | `TrainingAdapter` interface, `TrainingConfig`, dataset validator, Unsloth / Axolotl / MLX adapters and Python runners |
 | `src/cloud/client.ts` | The **only** place that talks to the cloud — `callCloudInference`, `callCloudTrain`, `callCloudAuthVerify`, `callCloudAuthMe`, `callCloudUsage`, `callCloudModels`, `callCloudHealth`, `callCloudTunnel`, plus `isProUser()` and `getCloudToken()` |
@@ -61,13 +61,13 @@ export function isProUser(): boolean {
 }
 ```
 
-`getCloudToken()` returns the value at `token` in `~/.quickslug/config.json` only if it starts with `qs_`. That's the entire test. **Being logged in is not the same as having an active subscription** — the cloud may still return `403 pro_subscription_required` and the cloud client surfaces that as a typed `ProSubscriptionRequiredError`.
+`getCloudToken()` returns the value at `token` in `~/.locopilot/config.json` only if it starts with `qs_`. That's the entire test. **Being logged in is not the same as having an active subscription** — the cloud may still return `403 pro_subscription_required` and the cloud client surfaces that as a typed `ProSubscriptionRequiredError`.
 
 ## Request pipeline
 
 The Fastify pipeline at the top of `src/api/index.ts`:
 
-1. **`onRequest`** — validates `Authorization`. Skipped for `/v1/models` and `/v1/quickslug/health`. Non-`qs_` tokens become anonymous (`req.apiKey = undefined`).
+1. **`onRequest`** — validates `Authorization`. Skipped for `/v1/models` and `/v1/locopilot/health`. Non-`qs_` tokens become anonymous (`req.apiKey = undefined`).
 2. **`preHandler`** — in-memory token-bucket rate limiter. Free tier short-circuits with no limit; Pro tier gets a `9999/min` local ceiling (real limit enforced cloud-side).
 3. **Route handler** — runs `localRouter.resolve()` on `/v1/chat/completions` and `/v1/completions`, then streams from the resolved provider.
 4. **`setErrorHandler`** — serialises `AppError` (e.g. `ValidationError`, `NotFoundError`, `RateLimitError`) into JSON.
@@ -82,31 +82,31 @@ The Fastify pipeline at the top of `src/api/index.ts`:
 | `remote` | Pro user **and** no local match (or Ollama unreachable) |
 | `not_found` | Free user **and** no local match (or Ollama unreachable) |
 
-`local` streams from `<OLLAMA_HOST>/api/chat`. `remote` proxies to `POST /api/inference` on QuickSlug Cloud (which handles RunPod). `not_found` returns `404 model_not_found`.
+`local` streams from `<OLLAMA_HOST>/api/chat`. `remote` proxies to `POST /api/inference` on LocoPilot Cloud (which handles RunPod). `not_found` returns `404 model_not_found`.
 
 A `403 pro_subscription_required` from the cloud is surfaced with the upgrade URL — there is **no silent fallback** to local for an explicit Pro request. A generic provider error returns `503 Provider unavailable`.
 
 ### Training
 
-The local API's `/v1/quickslug/training/*` handlers inspect the `Authorization` header and act in one of two modes:
+The local API's `/v1/locopilot/training/*` handlers inspect the `Authorization` header and act in one of two modes:
 
 | Header | Behaviour |
 |---|---|
-| `Bearer qs_…` | Proxies the request verbatim to QuickSlug Cloud's `/api/train*`. Surfaces upstream `403 pro_subscription_required` as-is. |
+| `Bearer qs_…` | Proxies the request verbatim to LocoPilot Cloud's `/api/train*`. Surfaces upstream `403 pro_subscription_required` as-is. |
 | anything else | Validates the body, runs the dataset validator (`MIN_DATASET_EXAMPLES = 10`, first 5 lines must be uniformly Alpaca or ShareGPT), inserts a row into `training_jobs`, and fires the executor in-process. |
 
-The `quickslug train --cloud` flag bypasses the local API entirely and calls the cloud directly — that's why the local-API auto-proxy path exists separately, for direct API consumers (HTTP clients other than the CLI).
+The `locopilot train --cloud` flag bypasses the local API entirely and calls the cloud directly — that's why the local-API auto-proxy path exists separately, for direct API consumers (HTTP clients other than the CLI).
 
 ## Local data model (SQLite)
 
-Created by [`quickslug init`](../cli/init) at `~/.quickslug/db.sqlite`:
+Created by [`locopilot init`](../cli/init) at `~/.locopilot/db.sqlite`:
 
 ```sql
 inference_logs (id, api_key_id, model, provider, tokens_in, tokens_out, latency_ms, ttfb_ms, status, created_at)
 training_jobs  (id, framework, status, base_model, dataset_path, output_path, config_json, error, started_at, completed_at, created_at)
 ```
 
-`training_jobs` is written by the worker. **`inference_logs` is currently unused in the public CLI v1.0** — the chat handler computes per-request usage but the local `tracker.record()` is a no-op stub (see [`src/api/services/localStubs.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/services/localStubs.ts)). Pro-tier inference is metered server-side.
+`training_jobs` is written by the worker. **`inference_logs` is currently unused in the public CLI v1.0** — the chat handler computes per-request usage but the local `tracker.record()` is a no-op stub (see [`src/api/services/localStubs.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/api/services/localStubs.ts)). Pro-tier inference is metered server-side.
 
 ## Failure handling
 
@@ -117,12 +117,12 @@ training_jobs  (id, framework, status, base_model, dataset_path, output_path, co
 | Cloud `403 pro_subscription_required` | Surfaced as `403` with `upgrade_url` — no silent local fallback |
 | Cloud generic failure (5xx, network) | `503 Provider unavailable` |
 | Local API down | Fastify never started — CLI prints `Could not connect to API: …` |
-| Pro token expired | Cloud returns `401`; CLI surfaces `Token rejected by cloud — run quickslug login` |
+| Pro token expired | Cloud returns `401`; CLI surfaces `Token rejected by cloud — run locopilot login` |
 
 ## Security boundaries
 
 - The local API binds to `0.0.0.0` by default. Use a reverse proxy if you need TLS or auth in front of it.
-- The Pro token in `~/.quickslug/config.json` is `mode 0600` — only the current user can read it.
+- The Pro token in `~/.locopilot/config.json` is `mode 0600` — only the current user can read it.
 - Model names everywhere are validated against `^[a-zA-Z0-9:._-]+$` to prevent shell injection in the `ollama pull` / `ollama rm` paths.
 - `cloudflared` is spawned with `shell: false` and an explicit args array — no command-line construction.
 - Chat / completions request bodies are validated by Fastify schema before they reach the handler (`messages` ≤ 500 items, content ≤ 128 KB, `temperature` 0-2, `max_tokens` 1-65536, role ∈ `system | user | assistant`).

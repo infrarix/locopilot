@@ -1,19 +1,19 @@
 ---
 sidebar_position: 1
-title: quickslug init
-description: One-time setup — installs Ollama, verifies Python 3, creates the local SQLite database, and writes ~/.quickslug/.env.
+title: locopilot init
+description: One-time setup — installs Ollama, verifies Python 3, creates the local SQLite database, and writes ~/.locopilot/.env.
 ---
 
-# `quickslug init`
+# `locopilot init`
 
-> Initialize QuickSlug — installs Ollama, sets up local database, writes config.
+> Initialize LocoPilot — installs Ollama, sets up local database, writes config.
 
-Source: [`src/cli/commands/init.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/init.ts)
+Source: [`src/cli/commands/init.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/cli/commands/init.ts)
 
 ## Synopsis
 
 ```bash
-quickslug init
+locopilot init
 ```
 
 No flags. Idempotent — safe to re-run.
@@ -48,7 +48,7 @@ This is non-fatal — Python is only needed for [training adapters](../training/
 
 ### 3. SQLite
 
-Creates `~/.quickslug/db.sqlite` (path overridable via `SQLITE_PATH`) and runs the schema:
+Creates `~/.locopilot/db.sqlite` (path overridable via `SQLITE_PATH`) and runs the schema:
 
 ```sql
 CREATE TABLE IF NOT EXISTS inference_logs (
@@ -86,16 +86,16 @@ CREATE INDEX IF NOT EXISTS idx_training_jobs_status
 
 ### 4. `.env`
 
-If `~/.quickslug/.env` does not exist, writes:
+If `~/.locopilot/.env` does not exist, writes:
 
 ```bash
-# QuickSlug local config — edit as needed
-SQLITE_PATH=/Users/you/.quickslug/db.sqlite
+# LocoPilot local config — edit as needed
+SQLITE_PATH=/Users/you/.locopilot/db.sqlite
 OLLAMA_HOST=http://localhost:11434
 API_PORT=8080
 
-# Uncomment to override the QuickSlug Cloud URL (for local dev):
-# QUICKSLUG_CLOUD_URL=http://localhost:8081
+# Uncomment to override the LocoPilot Cloud URL (for local dev):
+# LOCOPILOT_CLOUD_URL=http://localhost:8081
 ```
 
 If the file already exists, it is **not** overwritten — your customisations are preserved.
@@ -126,6 +126,6 @@ On every other platform it recommends the Unsloth path:
 ## Next
 
 ```bash
-quickslug models pull llama3:8b
-quickslug start
+locopilot models pull llama3:8b
+locopilot start
 ```

@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.5/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "quickslug/quickslug" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "locopilot/locopilot" }],
   "commit": false,
   "fixed": [],
   "linked": [],

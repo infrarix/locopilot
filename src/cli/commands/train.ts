@@ -33,14 +33,14 @@ interface JobResponse {
   [key: string]: unknown;
 }
 
-interface QuickSlugConfig {
+interface LocoPilotConfig {
   token?: string;
 }
 
 function readProToken(): string | null {
   try {
     if (!fs.existsSync(CONFIG_PATH)) return null;
-    const cfg = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8')) as QuickSlugConfig;
+    const cfg = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8')) as LocoPilotConfig;
     const t = cfg.token ?? null;
     return t && t.startsWith('qs_') ? t : null;
   } catch {
@@ -50,7 +50,7 @@ function readProToken(): string | null {
 
 const cmd = new Command('train').description('Submit a fine-tuning job');
 cmd.requiredOption('--config <file>', 'Path to training config JSON');
-cmd.option('--cloud', 'Route job to QuickSlug Cloud (requires quickslug login)', false);
+cmd.option('--cloud', 'Route job to LocoPilot Cloud (requires locopilot login)', false);
 
 cmd.action(async (opts: TrainOptions) => {
   loadEnv();
@@ -89,7 +89,7 @@ cmd.action(async (opts: TrainOptions) => {
   if (opts.cloud) {
     const token = readProToken();
     if (!token) {
-      console.error(chalk.red('  Not logged in. Run: quickslug login'));
+      console.error(chalk.red('  Not logged in. Run: locopilot login'));
       process.exit(1);
     }
 
@@ -105,7 +105,7 @@ cmd.action(async (opts: TrainOptions) => {
         console.error(chalk.gray(`    Manage at: ${err.upgradeUrl}\n`));
         process.exit(1);
       }
-      console.error(chalk.red(`  Could not connect to QuickSlug Cloud: ${(err as Error).message}`));
+      console.error(chalk.red(`  Could not connect to LocoPilot Cloud: ${(err as Error).message}`));
       process.exit(1);
     }
 
@@ -143,7 +143,7 @@ cmd.action(async (opts: TrainOptions) => {
 
   let res: Response;
   try {
-    res = await fetch(`${base}/v1/quickslug/training/jobs`, {
+    res = await fetch(`${base}/v1/locopilot/training/jobs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(config),
@@ -151,7 +151,7 @@ cmd.action(async (opts: TrainOptions) => {
     });
   } catch (err) {
     console.error(chalk.red(`  Could not connect to API: ${(err as Error).message}`));
-    console.error(chalk.gray('  Is QuickSlug running? Try: quickslug start'));
+    console.error(chalk.gray('  Is LocoPilot running? Try: locopilot start'));
     process.exit(1);
   }
 
@@ -167,7 +167,7 @@ cmd.action(async (opts: TrainOptions) => {
   console.log(chalk.bold('\n  Tailing logs...\n'));
 
   try {
-    const logsRes = await fetch(`${base}/v1/quickslug/training/jobs/${job.id}/logs`, {
+    const logsRes = await fetch(`${base}/v1/locopilot/training/jobs/${job.id}/logs`, {
       signal: AbortSignal.timeout(600_000),
     });
     await tailLogsFromResponse(logsRes);
@@ -176,7 +176,7 @@ cmd.action(async (opts: TrainOptions) => {
   }
 
   try {
-    const statusRes = await fetch(`${base}/v1/quickslug/training/jobs/${job.id}`, {
+    const statusRes = await fetch(`${base}/v1/locopilot/training/jobs/${job.id}`, {
       signal: AbortSignal.timeout(10_000),
     });
     await printFinalStatusFromResponse(statusRes);

@@ -10,7 +10,7 @@ import { printBanner } from '../utils/banner';
 
 const IS_WINDOWS = process.platform === 'win32';
 
-const cmd = new Command('start').description('Start the QuickSlug local API server');
+const cmd = new Command('start').description('Start the LocoPilot local API server');
 
 cmd.option('-p, --port <port>', 'Port to listen on (default: 8080)');
 
@@ -24,11 +24,11 @@ cmd.action(async (opts: { port?: string }) => {
   // ── Pre-flight: check that init has been run ───────────────────────────
   if (!fs.existsSync(paths.SQLITE_PATH)) {
     console.error(chalk.red('  ✖ Database not found.'));
-    console.error(chalk.gray('    Run: quickslug init'));
+    console.error(chalk.gray('    Run: locopilot init'));
     process.exit(1);
   }
 
-  console.log(chalk.bold(`  Starting QuickSlug on port ${port}...\n`));
+  console.log(chalk.bold(`  Starting LocoPilot on port ${port}...\n`));
 
   // ── Resolve the API entry point ────────────────────────────────────────
   // __dirname in dist/ = dist/cli/commands/ → 3 up = project root

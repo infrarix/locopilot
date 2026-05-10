@@ -1,20 +1,20 @@
 ---
 sidebar_position: 4
 title: Training API
-description: HTTP routes under /v1/quickslug/training for submitting jobs, polling status, and streaming logs.
+description: HTTP routes under /v1/locopilot/training for submitting jobs, polling status, and streaming logs.
 ---
 
 # Training API
 
-The local API exposes three routes under `/v1/quickslug/training/*` for fine-tuning jobs.
+The local API exposes three routes under `/v1/locopilot/training/*` for fine-tuning jobs.
 
-Source: [`src/api/routes/training.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/routes/training.ts) · [`src/worker/handlers.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/worker/handlers.ts)
+Source: [`src/api/routes/training.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/api/routes/training.ts) · [`src/worker/handlers.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/worker/handlers.ts)
 
 | Route | Method | Purpose |
 |---|---|---|
-| `/v1/quickslug/training/jobs` | `POST` | Submit a new training job |
-| `/v1/quickslug/training/jobs/:id` | `GET` | Get current status of a job |
-| `/v1/quickslug/training/jobs/:id/logs` | `GET` | Stream live logs as SSE |
+| `/v1/locopilot/training/jobs` | `POST` | Submit a new training job |
+| `/v1/locopilot/training/jobs/:id` | `GET` | Get current status of a job |
+| `/v1/locopilot/training/jobs/:id/logs` | `GET` | Stream live logs as SSE |
 
 ## Auto-routing
 
@@ -22,12 +22,12 @@ Each handler inspects the `Authorization` header:
 
 | Header | Behaviour |
 |---|---|
-| Starts with `Bearer qs_` | The handler proxies the request verbatim to QuickSlug Cloud (`/api/train` / `/api/train/:id` / `/api/train/:id/logs`). A `403 pro_subscription_required` from upstream is surfaced verbatim — there is **no silent fallback** to local execution. |
-| Anything else (or no header) | The job runs in-process via [`BasicWorker`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/worker/) on the local machine. |
+| Starts with `Bearer qs_` | The handler proxies the request verbatim to LocoPilot Cloud (`/api/train` / `/api/train/:id` / `/api/train/:id/logs`). A `403 pro_subscription_required` from upstream is surfaced verbatim — there is **no silent fallback** to local execution. |
+| Anything else (or no header) | The job runs in-process via [`BasicWorker`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/worker/) on the local machine. |
 
-The `quickslug train` CLI deliberately doesn't send the local Pro token to the local API — when you use `--cloud`, the CLI calls QuickSlug Cloud directly and bypasses the local API entirely.
+The `locopilot train` CLI deliberately doesn't send the local Pro token to the local API — when you use `--cloud`, the CLI calls LocoPilot Cloud directly and bypasses the local API entirely.
 
-## `POST /v1/quickslug/training/jobs`
+## `POST /v1/locopilot/training/jobs`
 
 Submit a new fine-tuning job.
 
@@ -82,7 +82,7 @@ HTTP/1.1 201 Created
 
 `id` is a `crypto.randomUUID()` value generated locally — SQLite has no `INSERT … RETURNING`. The executor then runs the job out-of-band (`fire-and-forget`).
 
-## `GET /v1/quickslug/training/jobs/:id`
+## `GET /v1/locopilot/training/jobs/:id`
 
 Returns the latest row from `training_jobs`:
 
@@ -104,7 +104,7 @@ Status values: `pending`, `running`, `completed`, `failed`. When `status === 'co
 
 A non-existent ID returns `404 { "error": "Job not found" }`.
 
-## `GET /v1/quickslug/training/jobs/:id/logs`
+## `GET /v1/locopilot/training/jobs/:id/logs`
 
 Server-Sent Events stream of live log lines from the worker.
 
@@ -132,7 +132,7 @@ data: No active log stream — job may have completed or not yet started
 data: [DONE]
 ```
 
-This is the endpoint that powers [`quickslug logs`](../cli/logs).
+This is the endpoint that powers [`locopilot logs`](../cli/logs).
 
 ## Errors
 

@@ -1,8 +1,4 @@
-Here’s your **updated README** aligned with the **new dual-mode (Free + Pro), zero-config, cloud control plane architecture**—clean, modern, and ready for open-source release.
-
----
-
-# 🚀 QuickSlug
+# 🚀 LocoPilot
 
 > Local-first, OpenAI-compatible AI platform.
 > Run models locally in seconds, optionally scale with cloud GPUs — all through one CLI + one API.
@@ -11,9 +7,9 @@ Here’s your **updated README** aligned with the **new dual-mode (Free + Pro), 
 
 ---
 
-# ✨ What is QuickSlug?
+# ✨ What is LocoPilot?
 
-QuickSlug lets you:
+LocoPilot lets you:
 
 - ⚡ Run LLMs locally via Ollama (zero config)
 - 🔄 Auto-fallback to remote GPU (Pro)
@@ -41,7 +37,7 @@ QuickSlug lets you:
 
 ## 🔵 Pro (Cloud — not shipped as code)
 
-Powered by **QuickSlug Cloud**:
+Powered by **LocoPilot Cloud**:
 
 - ☁️ Remote GPU (via RunPod)
 - ⚡ Faster training (10–50x)
@@ -57,16 +53,16 @@ Powered by **QuickSlug Cloud**:
 
 ```bash
 # 1. Install CLI
-npm install -g @infrarix/quickslug
+npm install -g @infrarix/locopilot
 
 # 2. Initialize (auto-installs Ollama if missing)
-quickslug init
+locopilot init
 
 # 3. Start local API
-quickslug start
+locopilot start
 
 # 4. Pull a model
-quickslug models pull llama3
+locopilot models pull llama3
 
 # 5. Test inference
 curl http://localhost:8080/v1/chat/completions \
@@ -82,10 +78,10 @@ curl http://localhost:8080/v1/chat/completions \
 
 ```bash
 # Login (OAuth or API key)
-quickslug login
+locopilot login
 
 # Expose your API publicly
-quickslug expose
+locopilot expose
 
 # Use cloud GPU automatically when needed
 ```
@@ -112,7 +108,7 @@ CLI → Local API → Ollama
 ```
 CLI → Local API
         │
-        └──→ QuickSlug Cloud
+        └──→ LocoPilot Cloud
                 ├── GPU (RunPod)
                 ├── Tunnel (Cloudflare)
                 ├── Auth
@@ -126,7 +122,7 @@ CLI → Local API
 ## Free (Local)
 
 ```bash
-quickslug train --config config.json
+locopilot train --config config.json
 ```
 
 - Runs locally
@@ -139,7 +135,7 @@ quickslug train --config config.json
 ## Pro (Cloud)
 
 ```bash
-quickslug train --cloud
+locopilot train --cloud
 ```
 
 - Runs on GPU
@@ -152,15 +148,15 @@ quickslug train --cloud
 
 | Command                           | Description                                  |
 | --------------------------------- | -------------------------------------------- |
-| `quickslug init`                  | Setup environment, install Ollama if missing |
-| `quickslug start`                 | Start local API server                       |
-| `quickslug login`                 | Authenticate for Pro features                |
-| `quickslug models pull <model>`   | Pull model locally                           |
-| `quickslug models list`           | List available models                        |
-| `quickslug expose`                | Get public API URL                           |
-| `quickslug train --config <file>` | Local training                               |
-| `quickslug train --cloud`         | Cloud training (Pro)                         |
-| `quickslug logs`                  | View logs                                    |
+| `locopilot init`                  | Setup environment, install Ollama if missing |
+| `locopilot start`                 | Start local API server                       |
+| `locopilot login`                 | Authenticate for Pro features                |
+| `locopilot models pull <model>`   | Pull model locally                           |
+| `locopilot models list`           | List available models                        |
+| `locopilot expose`                | Get public API URL                           |
+| `locopilot train --config <file>` | Local training                               |
+| `locopilot train --cloud`         | Cloud training (Pro)                         |
+| `locopilot logs`                  | View logs                                    |
 
 ---
 
@@ -174,7 +170,7 @@ quickslug train --cloud
 
 ### Pro Features
 
-- QuickSlug account
+- LocoPilot account
 - Internet connection
 
 ---
@@ -185,7 +181,7 @@ quickslug train --cloud
 - Pro tokens stored in:
 
   ```
-  ~/.quickslug/config.json
+  ~/.locopilot/config.json
   ```
 
 - No cloud secrets stored locally
@@ -208,7 +204,7 @@ We welcome contributions!
 - Improve docs
 
 ```bash
-git clone https://github.com/quickslug/quickslug
+git clone https://github.com/locopilot/locopilot
 ```
 
 ---
@@ -230,7 +226,7 @@ MIT — see [LICENSE](LICENSE)
 
 # 🌐 Learn More
 
-👉 [https://quickslug.dev](https://quickslug.dev)
+👉 [https://locopilot.dev](https://locopilot.dev)
 
 ---
 

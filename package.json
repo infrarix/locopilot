@@ -1,19 +1,19 @@
 {
-  "name": "@infrarix/quickslug",
+  "name": "@infrarix/locopilot",
   "version": "1.0.0",
   "description": "Local-first OpenAI-compatible AI platform",
   "license": "MIT",
   "private": false,
-  "homepage": "https://quickslug.com",
+  "homepage": "https://locopilot.infrarix.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/quickslug/quickslug.git"
+    "url": "https://github.com/infrarix/locopilot.git"
   },
   "publishConfig": {
     "access": "public"
   },
   "bin": {
-    "quickslug": "./dist/cli/index.js"
+    "locopilot": "./dist/cli/index.js"
   },
   "files": [
     "dist",

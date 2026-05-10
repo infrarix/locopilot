@@ -3,7 +3,7 @@ import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'QuickSlug',
+  title: 'LocoPilot',
   tagline: 'Run AI locally. Scale globally.',
   favicon: 'img/favicon.svg',
 
@@ -11,11 +11,11 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://quickslug.com',
+  url: 'https://locopilot.com',
   baseUrl: '/',
 
-  organizationName: 'quickslug',
-  projectName: 'quickslug',
+  organizationName: 'locopilot',
+  projectName: 'locopilot',
 
   onBrokenLinks: 'warn',
   onBrokenAnchors: 'ignore',
@@ -49,7 +49,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: 'docs',
-          editUrl: 'https://github.com/quickslug/quickslug/tree/main/quickslug-public-cli/docs/',
+          editUrl: 'https://github.com/locopilot/locopilot/tree/main/locopilot-public-cli/docs/',
         },
         blog: false,
         theme: {
@@ -67,9 +67,9 @@ const config: Config = {
       respectPrefersColorScheme: false,
     },
     navbar: {
-      title: 'QuickSlug',
+      title: 'LocoPilot',
       logo: {
-        alt: 'QuickSlug',
+        alt: 'LocoPilot',
         src: 'img/logo.svg',
       },
       items: [
@@ -95,7 +95,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://github.com/quickslug/quickslug',
+          href: 'https://github.com/locopilot/locopilot',
           label: 'GitHub',
           position: 'right',
         },
@@ -123,13 +123,13 @@ const config: Config = {
         {
           title: 'Community',
           items: [
-            { label: 'GitHub', href: 'https://github.com/quickslug/quickslug' },
-            { label: 'Issues', href: 'https://github.com/quickslug/quickslug/issues' },
-            { label: 'Discord', href: 'https://discord.gg/quickslug' },
+            { label: 'GitHub', href: 'https://github.com/locopilot/locopilot' },
+            { label: 'Issues', href: 'https://github.com/locopilot/locopilot/issues' },
+            { label: 'Discord', href: 'https://discord.gg/locopilot' },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} QuickSlug. CLI and API are MIT licensed.`,
+      copyright: `Copyright © ${new Date().getFullYear()} LocoPilot. CLI and API are MIT licensed.`,
     },
     prism: {
       theme: prismThemes.oneLight,

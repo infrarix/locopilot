@@ -42,7 +42,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={siteConfig.title}
-      description="QuickSlug is an OpenAI-compatible local-first AI platform. Run models on your hardware via Ollama, fall back to remote GPU automatically, and fine-tune on your data — all from one CLI."
+      description="LocoPilot is an OpenAI-compatible local-first AI platform. Run models on your hardware via Ollama, fall back to remote GPU automatically, and fine-tune on your data — all from one CLI."
     >
       <main className="qs-marketing">
         <Hero />

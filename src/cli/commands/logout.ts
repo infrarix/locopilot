@@ -34,7 +34,7 @@ cmd.action(() => {
   }
 
   console.log(chalk.green('\n  ✔ Logged out. Pro tier disabled.\n'));
-  console.log(chalk.gray('  Run `quickslug login` to re-enable Pro tier.\n'));
+  console.log(chalk.gray('  Run `locopilot login` to re-enable Pro tier.\n'));
 });
 
 export default cmd;

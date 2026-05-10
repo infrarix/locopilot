@@ -12,9 +12,9 @@ services:
     environment:
       OLLAMA_HOST: http://ollama:11434
     volumes:
-      - quickslug_data:/root/.quickslug
+      - locopilot_data:/root/.locopilot
     healthcheck:
-      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:8080/v1/quickslug/health']
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:8080/v1/locopilot/health']
       interval: 15s
       timeout: 5s
       retries: 5
@@ -32,5 +32,5 @@ services:
       retries: 5
 
 volumes:
-  quickslug_data:
+  locopilot_data:
   ollama_models:

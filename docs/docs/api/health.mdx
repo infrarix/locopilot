@@ -1,19 +1,19 @@
 ---
 sidebar_position: 3
-title: GET /v1/quickslug/health
+title: GET /v1/locopilot/health
 description: Heartbeat endpoint — probes Ollama, SQLite, and (Pro) cloud reachability.
 ---
 
-# `GET /v1/quickslug/health`
+# `GET /v1/locopilot/health`
 
 Heartbeat endpoint for liveness and readiness probes.
 
-Source: [`src/api/routes/health.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/routes/health.ts)
+Source: [`src/api/routes/health.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/api/routes/health.ts)
 
 ## Endpoint
 
 ```
-GET http://localhost:8080/v1/quickslug/health
+GET http://localhost:8080/v1/locopilot/health
 ```
 
 Public — listed in `PUBLIC_ROUTES`, no `Authorization` header required.
@@ -25,7 +25,7 @@ The handler runs every probe in parallel via `Promise.allSettled`:
 | Probe | What it does |
 |---|---|
 | `ollama` | `GET <OLLAMA_HOST>/` (default `http://localhost:11434`) with a 5 s timeout |
-| `sqlite` | `query('SELECT 1')` against `~/.quickslug/db.sqlite` |
+| `sqlite` | `query('SELECT 1')` against `~/.locopilot/db.sqlite` |
 | `cloud` *(Pro only)* | `GET <CLOUD_URL>/api/health` with `Authorization: Bearer qs_…` |
 
 ## Response shape
@@ -90,5 +90,5 @@ interface ServiceHealth {
 
 - Kubernetes / Docker readiness probes (parse `services.<name>.ok`)
 - CI pre-flight checks before running an integration suite
-- A simple ping for "is QuickSlug running?" from your own UI
-- The [`quickslug doctor`](../cli/doctor) command uses this internally
+- A simple ping for "is LocoPilot running?" from your own UI
+- The [`locopilot doctor`](../cli/doctor) command uses this internally

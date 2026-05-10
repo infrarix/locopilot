@@ -20,7 +20,7 @@ export interface Database {
   withTransaction(fn: (client: TransactionClient) => Promise<void>): Promise<void>;
 }
 
-const DEFAULT_SQLITE_PATH = join(homedir(), '.quickslug', 'db.sqlite');
+const DEFAULT_SQLITE_PATH = join(homedir(), '.locopilot', 'db.sqlite');
 
 class SQLiteDatabase implements Database {
   private db: sqlite3.Database;

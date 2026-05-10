@@ -1,5 +1,5 @@
 -- ══════════════════════════════════════════════════════════════════════════
--- QuickSlug — Database Schema Snapshot
+-- LocoPilot — Database Schema Snapshot
 -- Generated from migrations. DO NOT EDIT DIRECTLY.
 -- This file is for reference only. Use `npm run migrate` to apply changes.
 -- ══════════════════════════════════════════════════════════════════════════

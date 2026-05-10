@@ -1,19 +1,19 @@
 ---
 sidebar_position: 2
-title: quickslug start
+title: locopilot start
 description: Boot the local Fastify API server.
 ---
 
-# `quickslug start`
+# `locopilot start`
 
-> Start the QuickSlug local API server.
+> Start the LocoPilot local API server.
 
-Source: [`src/cli/commands/start.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/start.ts) · [`src/api/index.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/index.ts)
+Source: [`src/cli/commands/start.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/cli/commands/start.ts) · [`src/api/index.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/api/index.ts)
 
 ## Synopsis
 
 ```bash
-quickslug start [--port <port>]
+locopilot start [--port <port>]
 ```
 
 | Flag | Default | Description |
@@ -22,7 +22,7 @@ quickslug start [--port <port>]
 
 ## Behaviour
 
-1. Loads `~/.quickslug/.env` and aborts with a clear error if `~/.quickslug/db.sqlite` is missing — that means [`quickslug init`](init) has not been run.
+1. Loads `~/.locopilot/.env` and aborts with a clear error if `~/.locopilot/db.sqlite` is missing — that means [`locopilot init`](init) has not been run.
 2. Resolves the API entry point:
     - **Production** — `dist/api/index.js` (the compiled output)
     - **Development** — falls back to `ts-node src/api/index.ts` if `dist/` doesn't exist
@@ -32,15 +32,15 @@ quickslug start [--port <port>]
 ## Output
 
 ```text
-🐌 QuickSlug
+🐌 LocoPilot
 
-  Starting QuickSlug on port 8080...
+  Starting LocoPilot on port 8080...
 
-  Entry: /Users/you/.../node_modules/quickslug/dist/api/index.js
+  Entry: /Users/you/.../node_modules/locopilot/dist/api/index.js
 
 🐌 Starting in Free Tier mode (Local SQLite)
 {"level":30,"time":..., "msg":"Server listening at http://0.0.0.0:8080"}
-🐌 QuickSlug API running on port 8080
+🐌 LocoPilot API running on port 8080
 ```
 
 If a Pro token is present, the banner reads `Starting in Pro Tier mode (Cloud-augmented)` instead — the Pro/Free check happens at module load via `isProUser()`.
@@ -52,12 +52,12 @@ If a Pro token is present, the banner reads `Starting in Pro Tier mode (Cloud-au
 | `POST /v1/chat/completions` | optional | OpenAI-compatible — SSE streaming + JSON. A `qs_` token enables remote-GPU fallback. |
 | `POST /v1/completions` | optional | Legacy completions endpoint — same routing as `chat/completions` |
 | `GET  /v1/models` | public | Local Ollama models; merged with cloud catalog if a `qs_` token is present |
-| `GET  /v1/quickslug/health` | public | Heartbeat (Ollama + SQLite probes; adds `cloud` probe on Pro) |
-| `* /v1/quickslug/training/*` | optional | Runs in-process locally; auto-proxies to cloud when `Authorization: Bearer qs_…` is set |
+| `GET  /v1/locopilot/health` | public | Heartbeat (Ollama + SQLite probes; adds `cloud` probe on Pro) |
+| `* /v1/locopilot/training/*` | optional | Runs in-process locally; auto-proxies to cloud when `Authorization: Bearer qs_…` is set |
 
 The Fastify pipeline is:
 
-1. `onRequest` → validates `Authorization` (skipped for `/v1/models` and `/v1/quickslug/health`). Non-`qs_` headers are treated as anonymous (Free).
+1. `onRequest` → validates `Authorization` (skipped for `/v1/models` and `/v1/locopilot/health`). Non-`qs_` headers are treated as anonymous (Free).
 2. `preHandler` → in-memory token-bucket rate limiter; **no-ops for Free tier**, applies a high `9999/min` ceiling to Pro (real limit enforced cloud-side).
 3. `setErrorHandler` → serialises `AppError` instances into JSON.
 
@@ -69,7 +69,7 @@ See [API reference](../api/chat-completions) for the full surface.
 
 ## Troubleshooting
 
-**`Database not found.`** — you skipped `quickslug init`. Run it once.
+**`Database not found.`** — you skipped `locopilot init`. Run it once.
 
 **`Could not locate API entry point.`** — you're working from source and forgot to build:
 
@@ -77,4 +77,4 @@ See [API reference](../api/chat-completions) for the full surface.
 npm run build
 ```
 
-**Port already in use** — Fastify will throw `EADDRINUSE`. Pick a different port: `quickslug start --port 8090`.
+**Port already in use** — Fastify will throw `EADDRINUSE`. Pick a different port: `locopilot start --port 8090`.

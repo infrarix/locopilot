@@ -1,19 +1,19 @@
 ---
 sidebar_position: 8
-title: quickslug login
-description: Authenticate with QuickSlug Cloud and unlock Pro-tier features.
+title: locopilot login
+description: Authenticate with LocoPilot Cloud and unlock Pro-tier features.
 ---
 
-# `quickslug login`
+# `locopilot login`
 
-> Authenticate with QuickSlug Cloud (enables Pro tier).
+> Authenticate with LocoPilot Cloud (enables Pro tier).
 
-Source: [`src/cli/commands/login.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/login.ts)
+Source: [`src/cli/commands/login.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/cli/commands/login.ts)
 
 ## Synopsis
 
 ```bash
-quickslug login [--key <token>]
+locopilot login [--key <token>]
 ```
 
 | Flag | Default | Description |
@@ -25,35 +25,35 @@ If `--key` is omitted, the CLI prompts for your token using a hidden password in
 ## What it does
 
 1. Validates the token format — must start with `qs_` and be at least 20 characters.
-2. Calls `GET /api/auth/verify` on QuickSlug Cloud. A `200` confirms the token; a `401` aborts. Other errors (timeouts, DNS failures) print a warning and **save the token anyway** — it'll be re-validated on first use.
+2. Calls `GET /api/auth/verify` on LocoPilot Cloud. A `200` confirms the token; a `401` aborts. Other errors (timeouts, DNS failures) print a warning and **save the token anyway** — it'll be re-validated on first use.
 3. Calls `GET /api/auth/me` to fetch the subscription state and prints a tailored message:
 
 | Plan returned | Printed line |
 |---|---|
 | `pro_active` | `✔ Logged in (Pro — active until <date>)` |
-| `pro_past_due` | `✔ Logged in (Pro — past due, update billing at https://quickslug.com/dashboard)` |
-| `pro_canceled` / `pro_inactive` | `✔ Logged in (subscription <state> — re-subscribe at https://quickslug.com/pricing)` |
-| `free` | `✔ Logged in (Free — upgrade at https://quickslug.com/pricing for cloud features)` |
+| `pro_past_due` | `✔ Logged in (Pro — past due, update billing at https://locopilot.com/dashboard)` |
+| `pro_canceled` / `pro_inactive` | `✔ Logged in (subscription <state> — re-subscribe at https://locopilot.com/pricing)` |
+| `free` | `✔ Logged in (Free — upgrade at https://locopilot.com/pricing for cloud features)` |
 
-4. Writes the token to `~/.quickslug/config.json` with `mode: 0o600` so only you can read it. Existing fields (like a cached tunnel URL) are preserved.
+4. Writes the token to `~/.locopilot/config.json` with `mode: 0o600` so only you can read it. Existing fields (like a cached tunnel URL) are preserved.
 
 ## Where to get a token
 
-Sign in at [quickslug.com/dashboard](https://quickslug.com/dashboard) and click **Create API key**. Tokens are shown **once** — save it immediately.
+Sign in at [locopilot.com/dashboard](https://locopilot.com/dashboard) and click **Create API key**. Tokens are shown **once** — save it immediately.
 
 ```text
-  QuickSlug Login
+  LocoPilot Login
 
-  Get your API key at https://quickslug.com/dashboard
+  Get your API key at https://locopilot.com/dashboard
 
-  ? Enter your QuickSlug API key (qs_...) ********
+  ? Enter your LocoPilot API key (qs_...) ********
 
   Verifying token...
 
   ✔ Logged in (Pro — active until 6/9/2026)
 
-  Token stored at: ~/.quickslug/config.json
-  Run `quickslug logout` to remove it.
+  Token stored at: ~/.locopilot/config.json
+  Run `locopilot logout` to remove it.
 ```
 
 ## Tier semantics
@@ -67,4 +67,4 @@ The local CLI **never caches subscription state**. Every Pro-gated call re-fetch
 | `Invalid token format — must start with qs_` | Wrong format — copy/paste the entire `qs_…` string |
 | `Token too short — check for copy/paste errors.` | Token is < 20 characters |
 | `Invalid API key — authentication failed.` | The cloud returned 401 — token is wrong or revoked |
-| `Warning: could not reach QuickSlug Cloud — saving token offline.` | Network issue — the token is saved and validated lazily |
+| `Warning: could not reach LocoPilot Cloud — saving token offline.` | Network issue — the token is saved and validated lazily |

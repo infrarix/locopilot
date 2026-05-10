@@ -25,7 +25,7 @@ export interface CompletionsRequestBody {
   stop?: unknown;
 }
 
-// ── /v1/quickslug/health ────────────────────────────────────────────────────
+// ── /v1/locopilot/health ────────────────────────────────────────────────────
 
 export interface ServiceHealth {
   ok: boolean;

@@ -1,8 +1,8 @@
-# Contributing to QuickSlug
+# Contributing to LocoPilot
 
-Thanks for your interest in contributing to **QuickSlug** — the local-first, OpenAI-compatible AI platform. Bug reports, feature requests, docs fixes, and code changes are all welcome.
+Thanks for your interest in contributing to **LocoPilot** — the local-first, OpenAI-compatible AI platform. Bug reports, feature requests, docs fixes, and code changes are all welcome.
 
-This repository (`quickslug-public-cli`) is the MIT-licensed open-source CLI + local API. The hosted Pro control plane (`quickslug-core-backend`) is a separate, closed-source service and is out of scope for this repo.
+This repository (locopilot-public-cli`) is the MIT-licensed open-source CLI + local API. The hosted Pro control plane (`locopilot-core-backend`) is a separate, closed-source service and is out of scope for this repo.
 
 ## Table of Contents
 
@@ -21,15 +21,15 @@ This repository (`quickslug-public-cli`) is the MIT-licensed open-source CLI + l
 
 ## Code of Conduct
 
-This project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it. Report unacceptable behavior to **security@quickslug.dev**.
+This project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it. Report unacceptable behavior to **security@locopilot.dev**.
 
 ## Getting Started
 
 1. **Fork** the repository on GitHub.
 2. **Clone** your fork:
    ```bash
-   git clone https://github.com/<your-username>/quickslug-public-cli.git
-   cd quickslug-public-cli
+   git clone https://github.com/<your-username>/locopilot-public-cli.git
+   cd locopilot-public-cli
    ```
 3. **Install dependencies**:
    ```bash
@@ -70,7 +70,7 @@ src/
   cloud/      → cloud HTTP client (Pro tier)
   shared/     → utilities, types, DB pool, Ollama runtime client
 db/migrations/  → SQL migrations (Pro uses Postgres in the cloud backend;
-                  Free uses a file-based SQLite at ~/.quickslug/db.sqlite)
+                  Free uses a file-based SQLite at ~/.locopilot/db.sqlite)
 infra/          → docker-compose for local dev
 ```
 
@@ -195,7 +195,7 @@ Scopes match an area of the source tree:
 ### Examples
 
 ```bash
-feat(cli): add `quickslug models prune` to remove unused Ollama models
+feat(cli): add `locopilot models prune` to remove unused Ollama models
 fix(api): handle Ollama prefix match before falling through to 404
 docs(training): document MLX adapter selection on Apple Silicon
 chore(deps): bump fastify to 5.8.5
@@ -246,8 +246,8 @@ Breaking changes trigger a **major** version bump.
 - Use `const` by default; `let` only when mutation is required.
 - Prefer `readonly` on interfaces and type members where it makes sense.
 - Centralize cloud HTTP calls in `src/cloud/client.ts` — do not bypass it from CLI or API code.
-- The public client must **never** read `DATABASE_URL` or `REDIS_URL` — those live only on the cloud backend. Tier is detected purely by the presence of a `qs_` token in `~/.quickslug/config.json`.
-- Do not log raw prompts or completions unless `QUICKSLUG_LOG_PROMPTS=true` is explicitly set.
+- The public client must **never** read `DATABASE_URL` or `REDIS_URL` — those live only on the cloud backend. Tier is detected purely by the presence of a `qs_` token in `~/.locopilot/config.json`.
+- Do not log raw prompts or completions unless `LOCOPILOT_LOG_PROMPTS=true` is explicitly set.
 - Adapter selection in `src/training/` is OS-aware: Apple Silicon (`darwin` + `arm64`) → MLX; Linux/Windows → Unsloth or Axolotl. Preserve this branching when adding adapters.
 
 ## Testing
@@ -257,7 +257,7 @@ E2E scenarios that must pass before release (see CLAUDE.md for the full list):
 **Free tier**
 
 1. `init` → `start` → `POST /v1/chat/completions` streams via SSE without auth.
-2. `quickslug train --config` → job created → `running` → `completed` with `output_path` set.
+2. `locopilot train --config` → job created → `running` → `completed` with `output_path` set.
 3. Bad dataset format is rejected before execution with a descriptive error.
 4. Local model not found and not logged in → 404 with an upgrade hint.
 
@@ -265,7 +265,7 @@ E2E scenarios that must pass before release (see CLAUDE.md for the full list):
 
 5. Local model absent → cloud `/api/inference` → RunPod → stream.
 6. RunPod timeout → retry local → 503 if both fail.
-7. `quickslug train --cloud` → cloud `/api/train` → BullMQ → worker → `completed`.
+7. `locopilot train --cloud` → cloud `/api/train` → BullMQ → worker → `completed`.
 8. Training interrupted → resumes from last checkpoint (not epoch 0).
 9. 61st request within a minute → 429.
 10. Invalid API key → 401.
@@ -274,7 +274,7 @@ When adding tests, include positive, negative, and edge-case scenarios. Security
 
 ## Release Process
 
-QuickSlug uses [Changesets](https://github.com/changesets/changesets) for versioning and releases.
+LocoPilot uses [Changesets](https://github.com/changesets/changesets) for versioning and releases.
 
 ### Creating a Changeset
 
@@ -304,16 +304,16 @@ npm run changeset:publish
 
 **Do not open a public issue for security vulnerabilities.**
 
-Report them privately by emailing **security@quickslug.dev** or by opening a [private GitHub Security Advisory](https://github.com/Infrarix/quickslug-public-cli/security/advisories/new).
+Report them privately by emailing **security@locopilot.dev** or by opening a [private GitHub Security Advisory](https://github.com/Infrarix/locopilot-public-cli/security/advisories/new).
 
 See [SECURITY.md](SECURITY.md) for the full policy.
 
 ## License
 
-By contributing to QuickSlug, you agree that your contributions will be licensed under the [MIT License](LICENSE).
+By contributing to LocoPilot, you agree that your contributions will be licensed under the [MIT License](LICENSE).
 
 ## Need Help?
 
-If you need clarification, open an issue or start a discussion on GitHub. We appreciate every contribution that helps make QuickSlug better.
+If you need clarification, open an issue or start a discussion on GitHub. We appreciate every contribution that helps make LocoPilot better.
 
 Happy contributing!

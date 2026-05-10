@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /**
- * Conventional commits with QuickSlug-specific scopes.
- * Example: `feat(cli): add `quickslug usage --json` flag`
+ * Conventional commits with LocoPilot-specific scopes.
+ * Example: `feat(cli): add `locopilot usage --json` flag`
  */
 module.exports = {
   extends: ['@commitlint/config-conventional'],

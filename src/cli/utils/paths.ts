@@ -5,7 +5,7 @@ import os from 'os';
 import fs from 'fs';
 import dotenv from 'dotenv';
 
-export const HOME_DIR = path.join(os.homedir(), '.quickslug');
+export const HOME_DIR = path.join(os.homedir(), '.locopilot');
 export const ENV_PATH = path.join(HOME_DIR, '.env');
 export const DATA_DIR = path.join(HOME_DIR, 'data');
 export const CONFIG_PATH = path.join(HOME_DIR, 'config.json');

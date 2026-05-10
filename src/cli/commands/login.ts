@@ -11,20 +11,20 @@ async function promptToken(): Promise<string> {
   const res = await prompt<{ token: string }>({
     type: 'password',
     name: 'token',
-    message: 'Enter your QuickSlug API key (qs_...)',
+    message: 'Enter your LocoPilot API key (qs_...)',
   });
   return res.token.trim();
 }
 
-const cmd = new Command('login').description('Authenticate with QuickSlug Cloud (enables Pro tier)');
+const cmd = new Command('login').description('Authenticate with LocoPilot Cloud (enables Pro tier)');
 cmd.option('--key <token>', 'API key starting with qs_');
 
 cmd.action(async (opts: { key?: string }) => {
   let token = opts.key;
 
   if (!token) {
-    console.log(chalk.bold('\n  QuickSlug Login\n'));
-    console.log(chalk.gray('  Get your API key at https://quickslug.com/dashboard\n'));
+    console.log(chalk.bold('\n  LocoPilot Login\n'));
+    console.log(chalk.gray('  Get your API key at https://locopilot.com/dashboard\n'));
     try {
       token = await promptToken();
     } catch {
@@ -56,7 +56,7 @@ cmd.action(async (opts: { key?: string }) => {
     const res = await callCloudAuthVerify(`Bearer ${token}`);
     if (res.status === 401) {
       console.error(chalk.red('  Invalid API key — authentication failed.'));
-      console.error(chalk.gray('  Check your key at https://quickslug.com/dashboard'));
+      console.error(chalk.gray('  Check your key at https://locopilot.com/dashboard'));
       process.exit(1);
     }
     if (!res.ok) {
@@ -65,7 +65,7 @@ cmd.action(async (opts: { key?: string }) => {
   } catch (err) {
     const msg = (err as Error).message;
     if (msg.includes('fetch failed') || msg.includes('ENOTFOUND') || msg.includes('timeout')) {
-      console.warn(chalk.yellow('  Warning: could not reach QuickSlug Cloud — saving token offline.'));
+      console.warn(chalk.yellow('  Warning: could not reach LocoPilot Cloud — saving token offline.'));
       console.warn(chalk.gray('  Token will be verified on first use.'));
     } else {
       console.warn(chalk.yellow(`  Warning: verification skipped (${msg}) — saving token.`));
@@ -99,13 +99,13 @@ cmd.action(async (opts: { key?: string }) => {
         const renewsOn = me.current_period_end ? new Date(me.current_period_end).toLocaleDateString() : 'unknown';
         planLine = chalk.green(`  ✔ Logged in (Pro — active until ${renewsOn})`);
       } else if (plan === 'pro_past_due') {
-        planLine = chalk.yellow('  ✔ Logged in (Pro — past due, update billing at https://quickslug.com/dashboard)');
+        planLine = chalk.yellow('  ✔ Logged in (Pro — past due, update billing at https://locopilot.com/dashboard)');
       } else if (plan === 'pro_canceled' || plan === 'pro_inactive') {
         planLine = chalk.yellow(
-          `  ✔ Logged in (subscription ${plan.replace('pro_', '')} — re-subscribe at https://quickslug.com/pricing)`,
+          `  ✔ Logged in (subscription ${plan.replace('pro_', '')} — re-subscribe at https://locopilot.com/pricing)`,
         );
       } else {
-        planLine = chalk.green('  ✔ Logged in (Free — upgrade at https://quickslug.com/pricing for cloud features)');
+        planLine = chalk.green('  ✔ Logged in (Free — upgrade at https://locopilot.com/pricing for cloud features)');
       }
     }
   } catch {
@@ -114,7 +114,7 @@ cmd.action(async (opts: { key?: string }) => {
 
   console.log('\n' + planLine + '\n');
   console.log(chalk.gray('  Token stored at: ') + chalk.white(CONFIG_PATH));
-  console.log(chalk.gray('  Run `quickslug logout` to remove it.\n'));
+  console.log(chalk.gray('  Run `locopilot logout` to remove it.\n'));
 });
 
 export default cmd;

@@ -1,12 +1,12 @@
 ---
 sidebar_position: 3
 title: Adapters
-description: Unsloth, Axolotl, and MLX — the three training adapters QuickSlug ships with, and when to use each.
+description: Unsloth, Axolotl, and MLX — the three training adapters LocoPilot ships with, and when to use each.
 ---
 
 # Adapters
 
-QuickSlug abstracts every training framework behind the `TrainingAdapter` interface:
+LocoPilot abstracts every training framework behind the `TrainingAdapter` interface:
 
 ```ts
 // src/training/types.ts
@@ -18,7 +18,7 @@ export interface TrainingAdapter {
 }
 ```
 
-Three adapters ship in [`src/training/adapters/`](https://github.com/quickslug/quickslug/tree/main/quickslug-public-cli/src/training/adapters):
+Three adapters ship in [`src/training/adapters/`](https://github.com/locopilot/locopilot/tree/main/locopilot-public-cli/src/training/adapters):
 
 | Adapter | Platform | Python runner |
 |---|---|---|
@@ -91,7 +91,7 @@ import { EventEmitter } from 'events';
 import type {
   TrainingAdapter,
   PartialTrainingConfig,
-} from '@infrarix/quickslug/training/types';
+} from '@infrarix/locopilot/training/types';
 
 export class MyAdapter implements TrainingAdapter {
   async run(

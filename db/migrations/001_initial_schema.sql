@@ -1,6 +1,6 @@
 -- Migration: 001_initial_schema
 -- Run via: node-pg-migrate up
--- All tables from QuickSlug MVP Spec v1.0 §4
+-- All tables from LocoPilot MVP Spec v1.0 §4
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 

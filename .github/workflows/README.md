@@ -1,8 +1,8 @@
 # GitHub Actions Workflows
 
-CI/CD for the **`@infrarix/quickslug`** npm package and its Docusaurus docs site.
+CI/CD for the **`@infrarix/locopilot`** npm package and its Docusaurus docs site.
 
-This directory is designed for `quickslug-public-cli/` to live as its own standalone repository. All workflow paths assume `quickslug-public-cli/` is the repo root (so `package.json`, `.changeset/`, `.husky/`, etc. all sit at the same level as `.github/`).
+This directory is designed for `locopilot-public-cli/` to live as its own standalone repository. All workflow paths assume `locopilot-public-cli/` is the repo root (so `package.json`, `.changeset/`, `.husky/`, etc. all sit at the same level as `.github/`).
 
 ## Workflows
 
@@ -33,12 +33,12 @@ Builds the Docusaurus site at `docs/` and deploys to GitHub Pages with the offic
 | Secret      | Used by       | Purpose                                                                                     |
 | ----------- | ------------- | ------------------------------------------------------------------------------------------- |
 | `GH_PAT`    | `release.yml` | Lets `changesets/action` create release PRs (the default `GITHUB_TOKEN` cannot create PRs). |
-| `NPM_TOKEN` | `release.yml` | npm publish token (Automation type, must have publish rights on the `@infrarix/quickslug` package — the token must be scoped to the `infrarix` org). |
+| `NPM_TOKEN` | `release.yml` | npm publish token (Automation type, must have publish rights on the `@infrarix/locopilot` package — the token must be scoped to the `infrarix` org). |
 
 ### Creating `GH_PAT`
 
 1. https://github.com/settings/tokens/new
-2. Name: `QuickSlug Release Bot`
+2. Name: `LocoPilot Release Bot`
 3. Scopes: `repo`, `workflow`
 4. Generate, copy
 5. Repository → Settings → Secrets and variables → Actions → New repository secret
@@ -55,7 +55,7 @@ Repository → Settings → Pages → **Build and deployment → Source: GitHub 
 
 ## Local equivalents
 
-From the `quickslug-public-cli/` directory:
+From the `locopilot-public-cli/` directory:
 
 ```bash
 npm ci
@@ -81,7 +81,7 @@ npm run changeset       # interactive: pick bump + write description
 
 ## Note about the parent monorepo
 
-While this directory still lives inside the `Quickslug/` parent monorepo, npm workspaces and `@manypkg/get-packages` may climb up and detect the parent as the project root, which trips up `npx changeset` locally (it'll complain "There is no .changeset folder"). The fix is one of:
+While this directory still lives inside the `Quickslug/` parent monorepo (now LocoPilot), npm workspaces and `@manypkg/get-packages` may climb up and detect the parent as the project root, which trips up `npx changeset` locally (it'll complain "There is no .changeset folder"). The fix is one of:
 
 - Use this directory as its own git repo (the intended end state) — every tool then sees this as the root and Just Works.
 - For local-only convenience inside the monorepo, run with an explicit `cwd`:
@@ -89,12 +89,12 @@ While this directory still lives inside the `Quickslug/` parent monorepo, npm wo
   npx changeset --cwd .
   ```
 
-The CI jobs are unaffected — they check out `quickslug-public-cli/` (or this directory once extracted) as the workspace and operate from there.
+The CI jobs are unaffected — they check out `locopilot-public-cli/` (or this directory once extracted) as the workspace and operate from there.
 
 ## Troubleshooting
 
 **`GitHub Actions is not permitted to create or approve pull requests`** — `GH_PAT` missing or lacks `repo` + `workflow` scopes.
 
-**npm publish fails with 401/403** — `NPM_TOKEN` missing, expired, or scoped to the wrong package; the token must have publish rights on `@infrarix/quickslug`. For first-time publishes of a scoped package, also confirm `publishConfig.access: "public"` is set in `package.json` (it is) — otherwise npm rejects the publish as an attempted private package.
+**npm publish fails with 401/403** — `NPM_TOKEN` missing, expired, or scoped to the wrong package; the token must have publish rights on `@infrarix/locopilot`. For first-time publishes of a scoped package, also confirm `publishConfig.access: "public"` is set in `package.json` (it is) — otherwise npm rejects the publish as an attempted private package.
 
 **Docs deploy fails with `404` on GitHub Pages** — Repo → Settings → Pages → Source must be `GitHub Actions` (not "Deploy from a branch").

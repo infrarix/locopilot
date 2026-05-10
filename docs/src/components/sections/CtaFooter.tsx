@@ -63,7 +63,7 @@ export default function CtaFooter() {
             </motion.div>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Link
-                to="https://github.com/quickslug/quickslug"
+                to="https://github.com/locopilot/locopilot"
                 className="flex items-center gap-2 px-8 py-4 border border-brand-border hover:border-brand-purple/50 text-white font-medium text-base rounded-xl transition-colors hover:bg-white/5 no-underline"
               >
                 <Github size={18} />

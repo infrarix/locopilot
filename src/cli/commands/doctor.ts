@@ -64,7 +64,7 @@ cmd.action(async () => {
   const platform = process.platform;
   const arch = process.arch;
 
-  console.log(chalk.bold('\n  QuickSlug Doctor\n'));
+  console.log(chalk.bold('\n  LocoPilot Doctor\n'));
   console.log(chalk.gray(`  Platform: ${platform} / ${arch} / Node.js ${process.version}\n`));
 
   const results: boolean[] = [];
@@ -112,10 +112,10 @@ cmd.action(async () => {
   results.push(
     await check('SQLite database exists', async () => {
       if (!fs.existsSync(paths.SQLITE_PATH)) {
-        throw new Error('Not found — run: quickslug init');
+        throw new Error('Not found — run: locopilot init');
       }
       const stat = fs.statSync(paths.SQLITE_PATH);
-      if (stat.size === 0) throw new Error('Database is empty — run: quickslug init');
+      if (stat.size === 0) throw new Error('Database is empty — run: locopilot init');
     }),
   );
 
@@ -176,7 +176,7 @@ cmd.action(async () => {
   results.push(
     await check('Local API server reachable', async () => {
       const port = process.env.API_PORT ?? '8080';
-      const res = await fetch(`http://localhost:${port}/v1/quickslug/health`, {
+      const res = await fetch(`http://localhost:${port}/v1/locopilot/health`, {
         signal: AbortSignal.timeout(3_000),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -187,12 +187,12 @@ cmd.action(async () => {
   console.log('');
   const token = readToken();
   if (!token) {
-    console.log(chalk.gray('  Pro: not logged in — run `quickslug login` to enable cloud features'));
+    console.log(chalk.gray('  Pro: not logged in — run `locopilot login` to enable cloud features'));
   } else {
     results.push(
-      await check('(Pro) QuickSlug Cloud reachable', async () => {
+      await check('(Pro) LocoPilot Cloud reachable', async () => {
         const res = await callCloudAuthVerify(`Bearer ${token}`);
-        if (res.status === 401) throw new Error('Invalid API key — run: quickslug login');
+        if (res.status === 401) throw new Error('Invalid API key — run: locopilot login');
         if (!res.ok) throw new Error(`Cloud returned HTTP ${res.status}`);
       }),
     );

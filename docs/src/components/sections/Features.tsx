@@ -35,21 +35,21 @@ const FEATURES: Feature[] = [
   {
     icon: Shield,
     title: 'OpenAI-compatible API',
-    desc: 'Drop-in replacement for OpenAI. Point any SDK at QuickSlug and it just works — no code changes needed.',
+    desc: 'Drop-in replacement for OpenAI. Point any SDK at LocoPilot and it just works — no code changes needed.',
     color: 'text-brand-sky',
     bg: 'bg-brand-sky/10',
   },
   {
     icon: RefreshCw,
     title: 'Automatic failover',
-    desc: 'RunPod timeout? QuickSlug retries locally. Both down? It returns a clean 503. No hanging requests ever.',
+    desc: 'RunPod timeout? LocoPilot retries locally. Both down? It returns a clean 503. No hanging requests ever.',
     color: 'text-brand-violet',
     bg: 'bg-brand-violet/10',
   },
   {
     icon: Terminal,
     title: 'Developer CLI',
-    desc: '`quickslug init`, `doctor`, `start`, `train`, `logs`, `expose` — everything you need from one command.',
+    desc: '`locopilot init`, `doctor`, `start`, `train`, `logs`, `expose` — everything you need from one command.',
     color: 'text-white',
     bg: 'bg-white/5',
   },
@@ -86,7 +86,7 @@ export default function Features() {
               Everything you need to run AI in production
             </h2>
             <p className="text-brand-muted text-lg max-w-2xl mx-auto">
-              No more wrestling with fragmented tools. QuickSlug is a unified runtime for local inference, remote GPU,
+              No more wrestling with fragmented tools. LocoPilot is a unified runtime for local inference, remote GPU,
               and fine-tuning.
             </p>
           </div>

@@ -4,21 +4,21 @@ import { readFileSync, mkdirSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
 
-// Resolution order: QUICKSLUG_CLOUD_URL (legacy) → INFRARIX_API_URL
+// Resolution order: LOCOPILOT_CLOUD_URL (legacy) → INFRARIX_API_URL
 // (unified platform) → default. The unified Infrarix Platform backend
-// preserves QuickSlug's /api/* contract end-to-end.
-export const CLOUD_URL = process.env.QUICKSLUG_CLOUD_URL ?? process.env.INFRARIX_API_URL ?? 'https://api.infrarix.com';
+// preserves LocoPilot's /api/* contract end-to-end.
+export const CLOUD_URL = process.env.LOCOPILOT_CLOUD_URL ?? process.env.INFRARIX_API_URL ?? 'https://api.infrarix.com';
 const CLOUD_TIMEOUT_MS = 30_000;
 
-const CONFIG_DIR = join(homedir(), '.quickslug');
+const CONFIG_DIR = join(homedir(), '.locopilot');
 const CONFIG_PATH = join(CONFIG_DIR, 'config.json');
 
-interface QuickSlugConfig {
+interface LocoPilotConfig {
   token: string;
 }
 
-/** Reads ~/.quickslug/config.json. Returns null if absent or invalid. */
-export function readCloudConfig(): QuickSlugConfig | null {
+/** Reads ~/.locopilot/config.json. Returns null if absent or invalid. */
+export function readCloudConfig(): LocoPilotConfig | null {
   try {
     const raw = readFileSync(CONFIG_PATH, 'utf-8');
     const cfg = JSON.parse(raw) as { token?: string };
@@ -36,7 +36,7 @@ export function getCloudToken(): string | null {
   return readCloudConfig()?.token ?? null;
 }
 
-/** True only when a valid qs_ token exists in ~/.quickslug/config.json.
+/** True only when a valid qs_ token exists in ~/.locopilot/config.json.
  *  Note: this proves the user has *logged in*, NOT that they have an active
  *  Pro subscription. Subscription status is enforced server-side and may
  *  return 403 `pro_subscription_required` even with a valid token. */
@@ -74,7 +74,7 @@ export async function throwIfProRequired(res: Response): Promise<Response> {
     return res;
   }
   if (body?.error === 'pro_subscription_required') {
-    throw new ProSubscriptionRequiredError(body.upgrade_url ?? 'https://quickslug.com/dashboard', body.message);
+    throw new ProSubscriptionRequiredError(body.upgrade_url ?? 'https://locopilot.com/dashboard', body.message);
   }
   return res;
 }
@@ -160,7 +160,7 @@ export async function callCloudModels(authHeader: string, signal?: AbortSignal):
   });
 }
 
-/** Ensures ~/.quickslug/ directory exists. Called from init and login commands. */
+/** Ensures ~/.locopilot/ directory exists. Called from init and login commands. */
 export function ensureConfigDir(): void {
   mkdirSync(CONFIG_DIR, { recursive: true });
 }

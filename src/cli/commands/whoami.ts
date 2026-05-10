@@ -16,7 +16,7 @@ cmd.action(async () => {
   const token = getCloudToken();
   if (!token) {
     console.log(chalk.gray('\n  Not logged in.'));
-    console.log(chalk.gray('  Run: ') + chalk.white('quickslug login') + '\n');
+    console.log(chalk.gray('  Run: ') + chalk.white('locopilot login') + '\n');
     process.exit(0);
   }
 
@@ -24,7 +24,7 @@ cmd.action(async () => {
     const res = await callCloudAuthMe(`Bearer ${token}`);
     if (res.status === 401) {
       console.error(chalk.red('\n  ✖ Token rejected by cloud.'));
-      console.error(chalk.gray('  Run: ') + chalk.white('quickslug login') + ' with a fresh token.\n');
+      console.error(chalk.gray('  Run: ') + chalk.white('locopilot login') + ' with a fresh token.\n');
       process.exit(1);
     }
     if (!res.ok) {

@@ -1,22 +1,22 @@
 ---
 sidebar_position: 11
-title: quickslug usage
+title: locopilot usage
 description: Show token consumption and estimated cost for the current Stripe billing period.
 ---
 
-# `quickslug usage`
+# `locopilot usage`
 
 > Show token usage and estimated cost for the current period.
 
-Source: [`src/cli/commands/usage.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/usage.ts)
+Source: [`src/cli/commands/usage.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/cli/commands/usage.ts)
 
 ## Synopsis
 
 ```bash
-quickslug usage
+locopilot usage
 ```
 
-No flags. Requires a Pro token (`quickslug login`).
+No flags. Requires a Pro token (`locopilot login`).
 
 ## Output
 
@@ -27,7 +27,7 @@ No flags. Requires a Pro token (`quickslug login`).
   Cost:      $12.4567 (estimated)
 ```
 
-Backed by `GET /api/usage` on QuickSlug Cloud, which aggregates the `usage_events` table for the current Stripe billing period.
+Backed by `GET /api/usage` on LocoPilot Cloud, which aggregates the `usage_events` table for the current Stripe billing period.
 
 ## What's counted
 
@@ -39,7 +39,7 @@ Backed by `GET /api/usage` on QuickSlug Cloud, which aggregates the `usage_event
 
 ```text
   Not logged in.
-  Run: quickslug login
+  Run: locopilot login
 ```
 
 Exits `0` — usage requires Pro context, but the absence of a token is not an error.

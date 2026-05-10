@@ -9,9 +9,9 @@ const CARDS = [
     title: 'Command-line interface',
     desc: 'Manage your whole stack from the terminal. Init, start, fine-tune, expose — all in one binary.',
     links: [
-      { label: 'quickslug init', href: '/docs/cli/init' },
-      { label: 'quickslug train', href: '/docs/cli/train' },
-      { label: 'quickslug expose', href: '/docs/cli/expose' },
+      { label: 'locopilot init', href: '/docs/cli/init' },
+      { label: 'locopilot train', href: '/docs/cli/train' },
+      { label: 'locopilot expose', href: '/docs/cli/expose' },
     ],
     accent: 'border-brand-purple/30 hover:border-brand-purple/60',
     tagColor: 'bg-brand-purple/15 text-brand-violet',
@@ -23,7 +23,7 @@ const CARDS = [
     links: [
       { label: '/v1/chat/completions', href: '/docs/api/chat-completions' },
       { label: '/v1/models', href: '/docs/api/models' },
-      { label: '/v1/quickslug/health', href: '/docs/api/health' },
+      { label: '/v1/locopilot/health', href: '/docs/api/health' },
     ],
     accent: 'border-brand-blue/30 hover:border-brand-blue/60',
     tagColor: 'bg-brand-blue/15 text-brand-sky',
@@ -43,7 +43,7 @@ const CARDS = [
   {
     tag: 'SDK',
     title: 'Works with any OpenAI SDK',
-    desc: 'Python, Node.js, Go, Rust — if it supports a custom baseURL, it works with QuickSlug out of the box.',
+    desc: 'Python, Node.js, Go, Rust — if it supports a custom baseURL, it works with LocoPilot out of the box.',
     links: [
       { label: 'Quickstart', href: '/docs/getting-started/quickstart' },
       { label: 'Architecture', href: '/docs/architecture/overview' },
@@ -60,7 +60,7 @@ export default function Explore() {
       <div className="max-w-7xl mx-auto">
         <FadeIn>
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Explore QuickSlug</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Explore LocoPilot</h2>
             <p className="text-brand-muted text-lg max-w-xl mx-auto">
               Every surface is designed for developers. Pick your entry point.
             </p>

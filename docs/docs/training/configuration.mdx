@@ -8,7 +8,7 @@ description: The TrainingConfig schema, defaults, and a complete example.
 
 Every fine-tuning job is defined by a JSON file matching the `TrainingConfig` interface.
 
-Source: [`src/training/types.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/training/types.ts)
+Source: [`src/training/types.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/training/types.ts)
 
 ## Schema
 
@@ -82,11 +82,11 @@ These defaults target a 16 GB consumer GPU. Bump `batchSize` and `loraR` if you 
 ## Submit it
 
 ```bash
-quickslug train --config train.json          # Free — local in-process
-quickslug train --config train.json --cloud  # Pro  — QuickSlug Cloud
+locopilot train --config train.json          # Free — local in-process
+locopilot train --config train.json --cloud  # Pro  — LocoPilot Cloud
 ```
 
-See [`quickslug train`](../cli/train) for the full command surface.
+See [`locopilot train`](../cli/train) for the full command surface.
 
 ## Adapter selection
 
@@ -94,9 +94,9 @@ The framework you pick maps to a Python runner:
 
 | Framework | Runner | Best for |
 |---|---|---|
-| `unsloth` | [`src/training/adapters/unsloth_runner.py`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/training/adapters/unsloth_runner.py) | Linux / Windows with NVIDIA GPU; ~2× faster than vanilla HF Trainer |
-| `axolotl` | [`src/training/adapters/axolotl_runner.py`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/training/adapters/axolotl_runner.py) | More configuration knobs; multi-GPU |
-| `mlx` | [`src/training/adapters/mlx_runner.py`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/training/adapters/mlx_runner.py) | Apple Silicon (auto-selected on `darwin/arm64`) |
+| `unsloth` | [`src/training/adapters/unsloth_runner.py`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/training/adapters/unsloth_runner.py) | Linux / Windows with NVIDIA GPU; ~2× faster than vanilla HF Trainer |
+| `axolotl` | [`src/training/adapters/axolotl_runner.py`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/training/adapters/axolotl_runner.py) | More configuration knobs; multi-GPU |
+| `mlx` | [`src/training/adapters/mlx_runner.py`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/training/adapters/mlx_runner.py) | Apple Silicon (auto-selected on `darwin/arm64`) |
 
 See [Adapters](adapters) for installation and platform notes.
 

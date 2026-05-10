@@ -19,7 +19,7 @@ cmd.action(async () => {
   const token = getCloudToken();
   if (!token) {
     console.log(chalk.gray('\n  Not logged in.'));
-    console.log(chalk.gray('  Run: ') + chalk.white('quickslug login') + '\n');
+    console.log(chalk.gray('  Run: ') + chalk.white('locopilot login') + '\n');
     process.exit(0);
   }
 

@@ -7,9 +7,9 @@ find the full documentation for it [in our repository](https://github.com/change
 We have a quick list of common questions to get you started engaging with this project in
 [our documentation](https://github.com/changesets/changesets/blob/main/docs/common-questions.md).
 
-## How QuickSlug uses changesets
+## How LocoPilot uses changesets
 
-This repo publishes a single npm package: **`@infrarix/quickslug`**.
+This repo publishes a single npm package: **`@infrarix/locopilot`**.
 
 Most of the time you don't need to write a changeset by hand — the
 `changeset:autogenerate` script reads the most recent commit message and emits
@@ -19,7 +19,7 @@ one automatically when the scope is release-worthy (`cli`, `api`, `worker`,
 If you want to add one explicitly:
 
 ```bash
-cd quickslug-public-cli
+cd locopilot-public-cli
 npx changeset
 ```
 

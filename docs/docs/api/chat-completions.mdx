@@ -1,14 +1,14 @@
 ---
 sidebar_position: 1
 title: POST /v1/chat/completions
-description: OpenAI-compatible chat-completions endpoint with streaming. Routes to Ollama locally and to QuickSlug Cloud when needed.
+description: OpenAI-compatible chat-completions endpoint with streaming. Routes to Ollama locally and to LocoPilot Cloud when needed.
 ---
 
 # `POST /v1/chat/completions`
 
 OpenAI-compatible chat completions. Drop-in replacement — point your existing OpenAI SDK at `http://localhost:8080/v1` and it just works.
 
-Source: [`src/api/routes/chat.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/routes/chat.ts) · [`src/api/services/localRouter.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/services/localRouter.ts)
+Source: [`src/api/routes/chat.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/api/routes/chat.ts) · [`src/api/services/localRouter.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/api/services/localRouter.ts)
 
 ## Endpoint
 
@@ -21,7 +21,7 @@ POST http://localhost:8080/v1/chat/completions
 | Sent header | Treated as |
 |---|---|
 | (none) | Free tier — anonymous |
-| `Authorization: Bearer qs_…` | Pro tier — token forwarded to QuickSlug Cloud on fallback |
+| `Authorization: Bearer qs_…` | Pro tier — token forwarded to LocoPilot Cloud on fallback |
 | `Authorization: Bearer <anything else>` | Free tier (anonymous) — non-`qs_` tokens are ignored by the local auth middleware |
 
 ## Request body (validated by Fastify schema)
@@ -55,7 +55,7 @@ The role enum is exactly `system | user | assistant`. Tool/function-calling role
 
 ## Routing logic
 
-Source: [`localRouter.resolve()`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/services/localRouter.ts):
+Source: [`localRouter.resolve()`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/api/services/localRouter.ts):
 
 1. Fetch the full Ollama model list (`GET <OLLAMA_HOST>/api/tags`).
 2. **Exact match** — if any local model's `name === requestedModel` → `PROVIDERS.LOCAL`.
@@ -63,7 +63,7 @@ Source: [`localRouter.resolve()`](https://github.com/quickslug/quickslug/blob/ma
 4. **No match** — return `PROVIDERS.REMOTE` for Pro users, `PROVIDERS.NOT_FOUND` for Free users.
 5. If Ollama itself is unreachable, the same Pro/Free fall-through applies.
 
-When the resolved provider is `LOCAL`, the API streams from Ollama. When it's `REMOTE`, the request is proxied to `POST /api/inference` on QuickSlug Cloud (which routes to RunPod). When it's `NOT_FOUND`, the handler returns:
+When the resolved provider is `LOCAL`, the API streams from Ollama. When it's `REMOTE`, the request is proxied to `POST /api/inference` on LocoPilot Cloud (which routes to RunPod). When it's `NOT_FOUND`, the handler returns:
 
 ```json
 HTTP/1.1 404 Not Found
@@ -119,10 +119,10 @@ All errors include `Content-Type: application/json`.
 
 ## Rate limiting
 
-[`src/api/middleware/rateLimiter.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/middleware/rateLimiter.ts) is a per-key in-memory token bucket:
+[`src/api/middleware/rateLimiter.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/api/middleware/rateLimiter.ts) is a per-key in-memory token bucket:
 
 - **Free tier (no API key)** — middleware short-circuits with `if (!apiKey) return;` — no local rate limit.
-- **Pro tier** — the local stub assigns `9999 rpm`. The real limit is enforced server-side by QuickSlug Cloud.
+- **Pro tier** — the local stub assigns `9999 rpm`. The real limit is enforced server-side by LocoPilot Cloud.
 
 Headers `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset` are set on every Pro response.
 
@@ -135,7 +135,7 @@ import OpenAI from 'openai';
 
 const client = new OpenAI({
   baseURL: 'http://localhost:8080/v1',
-  apiKey: process.env.QUICKSLUG_KEY ?? 'not-needed',
+  apiKey: process.env.LOCOPILOT_KEY ?? 'not-needed',
 });
 
 const res = await client.chat.completions.create({
@@ -189,4 +189,4 @@ curl -N http://localhost:8080/v1/chat/completions \
 
 ## Usage tracking
 
-The local API computes per-request usage metrics (`tokensIn`, `tokensOut`, `latencyMs`, `ttfbMs`, `status`) but the v1.0 public CLI uses a **no-op tracker** locally — see [`src/api/services/localStubs.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/api/services/localStubs.ts). The `inference_logs` SQLite table is created by `quickslug init` for forward compatibility but is not written to. **Pro-tier usage** is metered server-side by QuickSlug Cloud and reported by [`quickslug usage`](../cli/usage).
+The local API computes per-request usage metrics (`tokensIn`, `tokensOut`, `latencyMs`, `ttfbMs`, `status`) but the v1.0 public CLI uses a **no-op tracker** locally — see [`src/api/services/localStubs.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/api/services/localStubs.ts). The `inference_logs` SQLite table is created by `locopilot init` for forward compatibility but is not written to. **Pro-tier usage** is metered server-side by LocoPilot Cloud and reported by [`locopilot usage`](../cli/usage).

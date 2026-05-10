@@ -1,30 +1,30 @@
 ---
 sidebar_position: 6
-title: quickslug logs
+title: locopilot logs
 description: Stream live logs for a running training job over Server-Sent Events.
 ---
 
-# `quickslug logs`
+# `locopilot logs`
 
 > Stream logs for a training job.
 
-Source: [`src/cli/commands/logs.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/logs.ts)
+Source: [`src/cli/commands/logs.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/cli/commands/logs.ts)
 
 ## Synopsis
 
 ```bash
-quickslug logs --job <id>
+locopilot logs --job <id>
 ```
 
 | Flag | Required | Description |
 |---|---|---|
-| `--job <id>` | ✅ | The job ID returned by `quickslug train` |
+| `--job <id>` | ✅ | The job ID returned by `locopilot train` |
 
-The command opens an SSE stream against `/v1/quickslug/training/jobs/<id>/logs` (or the equivalent cloud endpoint when a Pro token is present) and writes each `data:` frame to stdout.
+The command opens an SSE stream against `/v1/locopilot/training/jobs/<id>/logs` (or the equivalent cloud endpoint when a Pro token is present) and writes each `data:` frame to stdout.
 
 ## Reattaching
 
-`quickslug train` already opens a log stream automatically. Use `quickslug logs` when:
+`locopilot train` already opens a log stream automatically. Use `locopilot logs` when:
 
 - The terminal that started the job was closed
 - You want to monitor a job from a second machine
@@ -50,9 +50,9 @@ data: [DONE]
 | Error | Cause |
 |---|---|
 | `Could not connect to API: …` | The local API isn't running |
-| `API error 404` | Bad job ID — check it with `quickslug train` |
-| `Stream ended: …` | Network interruption — re-run `quickslug logs --job …` |
+| `API error 404` | Bad job ID — check it with `locopilot train` |
+| `Stream ended: …` | Network interruption — re-run `locopilot logs --job …` |
 
 ## Authorization
 
-If `~/.quickslug/config.json` contains a Pro token it's sent as `Authorization: Bearer …`. Without one, the request is anonymous (Free tier).
+If `~/.locopilot/config.json` contains a Pro token it's sent as `Authorization: Bearer …`. Without one, the request is anonymous (Free tier).

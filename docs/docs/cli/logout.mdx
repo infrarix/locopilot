@@ -1,33 +1,33 @@
 ---
 sidebar_position: 9
-title: quickslug logout
+title: locopilot logout
 description: Remove the stored Pro token and revert to the Free tier.
 ---
 
-# `quickslug logout`
+# `locopilot logout`
 
 > Remove stored credentials and disable Pro tier.
 
-Source: [`src/cli/commands/logout.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/logout.ts)
+Source: [`src/cli/commands/logout.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/cli/commands/logout.ts)
 
 ## Synopsis
 
 ```bash
-quickslug logout
+locopilot logout
 ```
 
 No flags.
 
 ## Behaviour
 
-1. Reads `~/.quickslug/config.json`. If missing or token-less, prints `Not logged in — nothing to remove.` and exits `0`.
+1. Reads `~/.locopilot/config.json`. If missing or token-less, prints `Not logged in — nothing to remove.` and exits `0`.
 2. Removes the `token` field while preserving the rest of the file (e.g. cached tunnel URL).
 3. If the file becomes empty after the deletion, deletes it entirely.
 
 ```text
   ✔ Logged out. Pro tier disabled.
 
-  Run `quickslug login` to re-enable Pro tier.
+  Run `locopilot login` to re-enable Pro tier.
 ```
 
 The very next CLI call will detect the missing token via `isProUser()` and revert to Free-tier behaviour automatically — no restart required.

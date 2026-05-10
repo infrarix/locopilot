@@ -1,22 +1,22 @@
 ---
 sidebar_position: 10
-title: quickslug whoami
+title: locopilot whoami
 description: Show the currently logged-in user, their plan, and renewal date.
 ---
 
-# `quickslug whoami`
+# `locopilot whoami`
 
 > Show the currently logged-in user and plan.
 
-Source: [`src/cli/commands/whoami.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/whoami.ts)
+Source: [`src/cli/commands/whoami.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/cli/commands/whoami.ts)
 
 ## Synopsis
 
 ```bash
-quickslug whoami
+locopilot whoami
 ```
 
-No flags. Calls `GET /api/auth/me` against QuickSlug Cloud.
+No flags. Calls `GET /api/auth/me` against LocoPilot Cloud.
 
 ## Output
 
@@ -40,7 +40,7 @@ The plan field maps `me.plan` from the cloud response:
 
 ```text
   Not logged in.
-  Run: quickslug login
+  Run: locopilot login
 ```
 
 Exits `0` — being signed-out is not an error.

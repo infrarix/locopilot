@@ -13,7 +13,7 @@ import healthRoute from './routes/health';
 import trainingRoutes from './routes/training';
 import { rateLimiter } from './middleware/rateLimiter';
 
-const PUBLIC_ROUTES = new Set(['/v1/models', '/v1/quickslug/health']);
+const PUBLIC_ROUTES = new Set(['/v1/models', '/v1/locopilot/health']);
 
 async function build(): Promise<FastifyInstance> {
   const app = Fastify({
@@ -63,8 +63,8 @@ async function build(): Promise<FastifyInstance> {
   await app.register(chatRoute, { prefix: '/v1' });
   await app.register(modelsRoute, { prefix: '/v1' });
   await app.register(legacyRoute, { prefix: '/v1' });
-  await app.register(healthRoute, { prefix: '/v1/quickslug' });
-  await app.register(trainingRoutes, { prefix: '/v1/quickslug' });
+  await app.register(healthRoute, { prefix: '/v1/locopilot' });
+  await app.register(trainingRoutes, { prefix: '/v1/locopilot' });
 
   return app;
 }
@@ -78,10 +78,10 @@ build()
     return app.listen({ port, host: '0.0.0.0' });
   })
   .then(() => {
-    console.log(`🐌 QuickSlug API running on port ${parseInt(process.env.API_PORT ?? '') || 8080}`);
+    console.log(`🐌 LocoPilot API running on port ${parseInt(process.env.API_PORT ?? '') || 8080}`);
   })
   .catch(async (err: Error) => {
-    console.error('Failed to start QuickSlug API:', err);
+    console.error('Failed to start LocoPilot API:', err);
     process.exit(1);
   });
 

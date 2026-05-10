@@ -1,19 +1,19 @@
 ---
 sidebar_position: 7
-title: quickslug expose
+title: locopilot expose
 description: Expose your local API to the public internet via a Cloudflare quick tunnel.
 ---
 
-# `quickslug expose`
+# `locopilot expose`
 
 > Expose the local API over a public Cloudflare Tunnel.
 
-Source: [`src/cli/commands/expose.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/expose.ts)
+Source: [`src/cli/commands/expose.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/cli/commands/expose.ts)
 
 ## Synopsis
 
 ```bash
-quickslug expose
+locopilot expose
 ```
 
 No flags. Reads `API_PORT` from the environment and defaults to `8080`.
@@ -22,7 +22,7 @@ No flags. Reads `API_PORT` from the environment and defaults to `8080`.
 
 1. Spawns `cloudflared tunnel --no-autoupdate --url http://localhost:<API_PORT>`.
 2. Tails stderr (cloudflared writes its progress there) and matches against `/https:\/\/[a-z0-9-]+\.trycloudflare\.com/`.
-3. Prints the public URL once it appears and saves it to `~/.quickslug/config.json` under `tunnel.url`.
+3. Prints the public URL once it appears and saves it to `~/.locopilot/config.json` under `tunnel.url`.
 4. Forwards `Ctrl-C` to cloudflared so the tunnel closes cleanly when you exit.
 
 ```text
@@ -51,11 +51,11 @@ If `cloudflared` is missing, the CLI prints the platform-appropriate hint and ex
 - Share a model with a teammate for an afternoon
 - Demo a fine-tuned model from your laptop
 
-The tunnel URL points directly at your local Fastify API, so anyone with the link can hit `POST /v1/chat/completions`. **Treat it as public** — there is no auth on Free tier. If you need auth, log in (`quickslug login`) and include the API key check in your reverse proxy.
+The tunnel URL points directly at your local Fastify API, so anyone with the link can hit `POST /v1/chat/completions`. **Treat it as public** — there is no auth on Free tier. If you need auth, log in (`locopilot login`) and include the API key check in your reverse proxy.
 
 ## Persisted URL
 
-The most recent tunnel URL is cached in `~/.quickslug/config.json`:
+The most recent tunnel URL is cached in `~/.locopilot/config.json`:
 
 ```json
 {

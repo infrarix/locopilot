@@ -9,7 +9,7 @@
 
 export type JobStatus = 'pending' | 'running' | 'completed' | 'failed';
 
-// ── HTTP request body for POST /v1/quickslug/training/jobs ─────────────────
+// ── HTTP request body for POST /v1/locopilot/training/jobs ─────────────────
 
 export interface CreateJobBody {
   framework?: string;

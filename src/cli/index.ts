@@ -29,7 +29,7 @@ import usageCmd from './commands/usage';
 const pkg = require(path.resolve(__dirname, '../../package.json')) as { version: string };
 
 const program = new Command();
-program.name('quickslug').description('QuickSlug CLI').version(pkg.version);
+program.name('locopilot').description('LocoPilot CLI').version(pkg.version);
 
 program.addCommand(initCmd);
 program.addCommand(startCmd);

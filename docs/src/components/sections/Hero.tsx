@@ -8,7 +8,7 @@ import ParticleField from '../marketing/ParticleField';
 import FadeIn from '../ui/FadeIn';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 
-const INSTALL_CMD = 'npm install -g @infrarix/quickslug && quickslug init';
+const INSTALL_CMD = 'npm install -g @infrarix/locopilot && locopilot init';
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -72,7 +72,7 @@ export default function Hero() {
 
         <FadeIn delay={0.5}>
           <p className="text-base sm:text-lg md:text-xl text-brand-muted max-w-2xl mx-auto mb-10 leading-relaxed px-2 sm:px-0">
-            QuickSlug is an OpenAI-compatible inference platform that runs models locally via Ollama, falls back to
+            LocoPilot is an OpenAI-compatible inference platform that runs models locally via Ollama, falls back to
             remote GPU automatically, and fine-tunes on your data — all from one CLI.
           </p>
         </FadeIn>
@@ -120,7 +120,7 @@ export default function Hero() {
             <Terminal size={15} className="text-brand-violet flex-shrink-0" />
             <code className="text-xs sm:text-sm text-gray-300 whitespace-nowrap">
               <span className="text-brand-muted">$</span> <span className="text-brand-violet">npm</span> install -g
-              quickslug &amp;&amp; <span className="text-brand-violet">quickslug</span>{' '}
+              locopilot &amp;&amp; <span className="text-brand-violet">locopilot</span>{' '}
               <span className="text-brand-blue">init</span>
             </code>
             <span className="hidden sm:inline text-[10px] text-brand-muted group-hover:opacity-100 opacity-0 transition-opacity ml-2 flex-shrink-0">

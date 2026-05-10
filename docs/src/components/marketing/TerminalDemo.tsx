@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 const LINES = [
-  { text: '$ quickslug init', type: 'cmd' as const, delay: 0 },
+  { text: '$ locopilot init', type: 'cmd' as const, delay: 0 },
   { text: '', type: 'blank' as const, delay: 300 },
-  { text: '🐌 QuickSlug Doctor', type: 'heading' as const, delay: 500 },
+  { text: '🐌 LocoPilot Doctor', type: 'heading' as const, delay: 500 },
   { text: '  ✔ Ollama           running on :11434', type: 'success' as const, delay: 800 },
-  { text: '  ✔ SQLite           ~/.quickslug/db.sqlite', type: 'success' as const, delay: 1100 },
+  { text: '  ✔ SQLite           ~/.locopilot/db.sqlite', type: 'success' as const, delay: 1100 },
   { text: '', type: 'blank' as const, delay: 1400 },
   { text: '✔ Ready. Free tier activated.', type: 'success' as const, delay: 1700 },
   { text: '', type: 'blank' as const, delay: 1900 },
@@ -74,7 +74,7 @@ export default function TerminalDemo({ className = '' }: { className?: string })
             <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
             <div className="w-3 h-3 rounded-full bg-brand-violet/70" />
           </div>
-          <span className="text-[11px] text-brand-muted ml-2 font-mono">terminal — quickslug</span>
+          <span className="text-[11px] text-brand-muted ml-2 font-mono">terminal — locopilot</span>
         </div>
 
         <div className="px-4 sm:px-5 py-4 min-h-[280px] sm:min-h-[320px] max-h-[400px] overflow-y-auto overflow-x-auto">

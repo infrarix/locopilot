@@ -63,7 +63,7 @@ cmd
 
       if (!res.ok) {
         spinner.fail(chalk.red(`API returned ${res.status}`));
-        console.error(chalk.gray('  Is QuickSlug running? Try: quickslug start'));
+        console.error(chalk.gray('  Is LocoPilot running? Try: locopilot start'));
         process.exit(1);
       }
 
@@ -72,13 +72,13 @@ cmd
       spinner.stop();
     } catch (err) {
       spinner.fail(chalk.red(`Could not connect to API: ${(err as Error).message}`));
-      console.error(chalk.gray('  Is QuickSlug running? Try: quickslug start'));
+      console.error(chalk.gray('  Is LocoPilot running? Try: locopilot start'));
       process.exit(1);
     }
 
     console.log(chalk.bold('\n  Models:\n'));
     if (!data || data.length === 0) {
-      console.log(chalk.gray('  No models found. Run: quickslug models pull <model>\n'));
+      console.log(chalk.gray('  No models found. Run: locopilot models pull <model>\n'));
       return;
     }
 

@@ -1,8 +1,8 @@
-# Code of Conduct — QuickSlug
+# Code of Conduct — LocoPilot
 
 ## Our Pledge
 
-In the interest of fostering an open and welcoming environment, we as contributors and maintainers of **QuickSlug** pledge to make participation in our project and community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers of **LocoPilot** pledge to make participation in our project and community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
 ## Our Standards
 
@@ -30,11 +30,11 @@ Project maintainers have the right and responsibility to remove, edit, or reject
 
 ## Scope
 
-This Code of Conduct applies within all project spaces — the `quickslug-public-cli` repository, the issue tracker, pull requests, discussions, and any official communication channels — and also applies when an individual is officially representing the project in public spaces. Examples of representing the project include using an official email address, posting via an official social media account, or acting as an appointed representative at an online or offline event.
+This Code of Conduct applies within all project spaces — the `locopilot-public-cli` repository, the issue tracker, pull requests, discussions, and any official communication channels — and also applies when an individual is officially representing the project in public spaces. Examples of representing the project include using an official email address, posting via an official social media account, or acting as an appointed representative at an online or offline event.
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers at **security@quickslug.dev**. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers at **security@locopilot.dev**. All complaints will be reviewed and investigated promptly and fairly.
 
 All maintainers are obligated to respect the privacy and security of the reporter of any incident.
 

@@ -6,11 +6,11 @@ const STEPS = [
   {
     n: '01',
     title: 'Install & init',
-    desc: 'Install the CLI and run quickslug init. It detects your Ollama setup, initialises a local SQLite database, and writes a default .env.',
-    code: `$ npm install -g @infrarix/quickslug
-$ quickslug init
+    desc: 'Install the CLI and run locopilot init. It detects your Ollama setup, initialises a local SQLite database, and writes a default .env.',
+    code: `$ npm install -g @infrarix/locopilot
+$ locopilot init
 
-🐌 QuickSlug Doctor
+🐌 LocoPilot Doctor
   ✔ Ollama
   ✔ SQLite
 
@@ -19,7 +19,7 @@ $ quickslug init
   {
     n: '02',
     title: 'Call the API',
-    desc: 'Use the OpenAI SDK, curl, or any HTTP client. No API key needed for local free-tier use — QuickSlug routes to Ollama if the model is available.',
+    desc: 'Use the OpenAI SDK, curl, or any HTTP client. No API key needed for local free-tier use — LocoPilot routes to Ollama if the model is available.',
     code: `import OpenAI from 'openai';
 
 const client = new OpenAI({
@@ -36,8 +36,8 @@ const stream = await client.chat.completions.create({
   {
     n: '03',
     title: 'Fine-tune',
-    desc: 'Submit a training job with your JSONL dataset. QuickSlug validates the format, runs it in-process via the local worker, and streams logs live.',
-    code: `$ quickslug train \\
+    desc: 'Submit a training job with your JSONL dataset. LocoPilot validates the format, runs it in-process via the local worker, and streams logs live.',
+    code: `$ locopilot train \\
   --config train.json
 
 Submitting job...

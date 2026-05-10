@@ -1,33 +1,33 @@
 ---
 sidebar_position: 5
-title: quickslug train
-description: Submit a fine-tuning job — local in-process (Free) or routed to QuickSlug Cloud (Pro).
+title: locopilot train
+description: Submit a fine-tuning job — local in-process (Free) or routed to LocoPilot Cloud (Pro).
 ---
 
-# `quickslug train`
+# `locopilot train`
 
 > Submit a fine-tuning job.
 
-Source: [`src/cli/commands/train.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/train.ts)
+Source: [`src/cli/commands/train.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/cli/commands/train.ts)
 
 ## Synopsis
 
 ```bash
-quickslug train --config <file> [--cloud]
+locopilot train --config <file> [--cloud]
 ```
 
 | Flag | Required | Default | Description |
 |---|---|---|---|
 | `--config <file>` | ✅ | — | Path to a JSON config file (see [training/configuration](../training/configuration)) |
-| `--cloud` | ❌ | `false` | Route the job to QuickSlug Cloud instead of running locally. Requires `quickslug login`. |
+| `--cloud` | ❌ | `false` | Route the job to LocoPilot Cloud instead of running locally. Requires `locopilot login`. |
 
 ## Free tier (local in-process)
 
 ```bash
-quickslug train --config train.json
+locopilot train --config train.json
 ```
 
-The job is `POST`-ed to `http://localhost:8080/v1/quickslug/training/jobs`. The local API immediately enqueues it on the in-process `BasicWorker` and returns a job ID. The CLI then opens an SSE stream from `/v1/quickslug/training/jobs/<id>/logs` and forwards every line to stdout.
+The job is `POST`-ed to `http://localhost:8080/v1/locopilot/training/jobs`. The local API immediately enqueues it on the in-process `BasicWorker` and returns a job ID. The CLI then opens an SSE stream from `/v1/locopilot/training/jobs/<id>/logs` and forwards every line to stdout.
 
 ```text
   Submitting training job...
@@ -44,7 +44,7 @@ The job is `POST`-ed to `http://localhost:8080/v1/quickslug/training/jobs`. The 
 ...
 [unsloth] Training complete ✔
 
-  Adapter saved to: /Users/you/quickslug/out/lora-llama3-8b/
+  Adapter saved to: /Users/you/locopilot/out/lora-llama3-8b/
 ```
 
 ### What gets validated
@@ -60,10 +60,10 @@ The full config schema lives in [training/configuration](../training/configurati
 ## Pro tier (cloud)
 
 ```bash
-quickslug train --config train.json --cloud
+locopilot train --config train.json --cloud
 ```
 
-The job is `POST`-ed to QuickSlug Cloud's `/api/train`, which enqueues it on a BullMQ queue. Logs stream from `/api/train/<id>/logs` (Redis pub/sub-backed SSE).
+The job is `POST`-ed to LocoPilot Cloud's `/api/train`, which enqueues it on a BullMQ queue. Logs stream from `/api/train/<id>/logs` (Redis pub/sub-backed SSE).
 
 If your subscription is missing or expired the cloud call rejects with a `ProSubscriptionRequiredError` and the CLI prints the upgrade URL.
 
@@ -76,15 +76,15 @@ On `darwin/arm64` the local worker auto-selects the **MLX** adapter (`framework:
 | Error | Cause |
 |---|---|
 | `Config missing required field: framework / baseModel / datasetPath / outputDir` | Required field absent in the JSON |
-| `Could not connect to API: …` | The local API isn't running — `quickslug start` first |
-| `Not logged in. Run: quickslug login` | `--cloud` was used but no Pro token is stored |
+| `Could not connect to API: …` | The local API isn't running — `locopilot start` first |
+| `Not logged in. Run: locopilot login` | `--cloud` was used but no Pro token is stored |
 | `✖ Pro subscription not active.` | Cloud rejected the job — your Stripe subscription is past-due / cancelled |
 | `Job rejected: <validator error>` | Dataset format invalid (see [training/datasets](../training/datasets)) |
 
 ## Tail an existing job
 
-If your terminal disconnects, the job keeps running. Reattach with [`quickslug logs`](logs):
+If your terminal disconnects, the job keeps running. Reattach with [`locopilot logs`](logs):
 
 ```bash
-quickslug logs --job job_7f3a2b
+locopilot logs --job job_7f3a2b
 ```

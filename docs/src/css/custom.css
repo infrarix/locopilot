@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 /* ────────────────────────────────────────────────────────────────────────
-   QuickSlug brand palette — purple / blue / white
+   LocoPilot brand palette — purple / blue / white
    Mapped to Infima variables so doc pages, sidebar, and footer pick up
    the brand automatically.
    ──────────────────────────────────────────────────────────────────────── */
@@ -95,7 +95,7 @@ body {
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   Marketing-page utilities (mirrors quickslug-web's design system).
+   Marketing-page utilities (mirrors locopilot-web's design system).
    These are referenced from the homepage components.
    ──────────────────────────────────────────────────────────────────────── */
 .gradient-text {

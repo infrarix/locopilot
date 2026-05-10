@@ -9,11 +9,11 @@
 // else (docs, ci, deps, release, repo, …) is intentionally a no-op so we
 // don't ship a release for a workflow tweak or a typo fix in a markdown file.
 //
-// All bumps target the single published package: `@infrarix/quickslug`.
+// All bumps target the single published package: `@infrarix/locopilot`.
 import { execSync } from 'child_process';
 import fs from 'fs';
 
-const PACKAGE_NAME = '@infrarix/quickslug';
+const PACKAGE_NAME = '@infrarix/locopilot';
 
 // Scopes that affect shipped CLI / API behaviour and therefore warrant a release.
 const bumpingScopes = new Set(['cli', 'api', 'worker', 'training', 'cloud', 'shared']);

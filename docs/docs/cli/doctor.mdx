@@ -1,19 +1,19 @@
 ---
 sidebar_position: 3
-title: quickslug doctor
+title: locopilot doctor
 description: Pre-flight checks — Ollama, SQLite, disk space, Python, training adapter, API server, and (Pro) cloud reachability.
 ---
 
-# `quickslug doctor`
+# `locopilot doctor`
 
 > Run pre-flight checks.
 
-Source: [`src/cli/commands/doctor.ts`](https://github.com/quickslug/quickslug/blob/main/quickslug-public-cli/src/cli/commands/doctor.ts)
+Source: [`src/cli/commands/doctor.ts`](https://github.com/locopilot/locopilot/blob/main/locopilot-public-cli/src/cli/commands/doctor.ts)
 
 ## Synopsis
 
 ```bash
-quickslug doctor
+locopilot doctor
 ```
 
 No flags. Always exits with code `1` if any check fails.
@@ -24,12 +24,12 @@ No flags. Always exits with code `1` if any check fails.
 |---|---|---|
 | 1 | **Ollama reachable** | `GET http://localhost:11434` responds 200 within 5 s |
 | 2 | **Ollama CLI installed** | `ollama` binary on `$PATH`; prints version when found |
-| 3 | **Home directory writable** | Can write a temp file inside `~/.quickslug/` |
-| 4 | **SQLite database exists** | `~/.quickslug/db.sqlite` exists and is non-empty |
+| 3 | **Home directory writable** | Can write a temp file inside `~/.locopilot/` |
+| 4 | **SQLite database exists** | `~/.locopilot/db.sqlite` exists and is non-empty |
 | 5 | **Disk space (> 500 MB free)** | `fs.statfsSync` reports at least 500 MB available — models take several GB each |
 | 6 | **Python 3** | `python3 --version` returns `Python 3.x` |
 | 7 | **Training adapter** | On Apple Silicon: `import mlx_lm` works. Everywhere else: `import unsloth` works. |
-| 8 | **Local API server reachable** | `GET /v1/quickslug/health` responds 200 — i.e. `quickslug start` is running |
+| 8 | **Local API server reachable** | `GET /v1/locopilot/health` responds 200 — i.e. `locopilot start` is running |
 | 9 | **(Pro) Cloud reachable** | `GET /api/auth/verify` with your token returns 200 |
 
 A failed check still proceeds to the next one — `doctor` is a status report, not a fail-fast gate.
@@ -37,7 +37,7 @@ A failed check still proceeds to the next one — `doctor` is a status report, n
 ## Sample output
 
 ```text
-  QuickSlug Doctor
+  LocoPilot Doctor
 
   Platform: darwin / arm64 / Node.js v20.18.0
 
@@ -52,7 +52,7 @@ A failed check still proceeds to the next one — `doctor` is a status report, n
 
   ✔ Local API server reachable
 
-  Pro: not logged in — run `quickslug login` to enable cloud features
+  Pro: not logged in — run `locopilot login` to enable cloud features
 
   Free tier ready.
 ```
