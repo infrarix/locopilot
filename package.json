@@ -1,6 +1,6 @@
 {
   "name": "@infrarix/locopilot",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Local-first OpenAI-compatible AI platform",
   "license": "MIT",
   "private": false,
